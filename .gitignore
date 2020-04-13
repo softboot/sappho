@@ -1,0 +1,6 @@
+# SBT configuration and generated artifacts
+project/*
+target/*
+
+# IntelliJ IDEA-specific project configuration files
+.idea
