@@ -9,6 +9,7 @@ import sappho.ao3.Story._
 
 private class PageStory private(val storyId: Long, page: Document) extends Story {
   override def title: String = page >> text("h2.title")
+  override def language: String = page >> text("dd.language")
 
   override def wordCount: Int = page >> extractor("dd.words", text, asInt)
   override def score: Int = page >> extractor("dd.kudos", text, asInt)
