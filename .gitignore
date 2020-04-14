@@ -4,3 +4,6 @@ target/*
 
 # IntelliJ IDEA-specific project configuration files
 .idea
+
+# Test resource files (omitted due to copyright concerns)
+resources/test/*.html
