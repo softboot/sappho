@@ -15,7 +15,11 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def language: String = page >> text("dd.language")
 
   override def publishedOn: LocalDate = LocalDate.parse(page >> text("dd.published"), ISO_LOCAL_DATE)
-  override def updatedOn: LocalDate = LocalDate.parse(page >> text("dd.status"), ISO_LOCAL_DATE)
+  override def updatedOn: LocalDate = {
+    (page >?> text("dd.status")) //If the story is a one-shot, date of last update is omitted.
+      .map(date => LocalDate.parse(date, ISO_LOCAL_DATE))
+      .getOrElse(publishedOn)
+  }
   override def completedOn: Option[LocalDate] = if(isComplete) Some(updatedOn) else None
 
   override def wordCount: Int = page >> extractor("dd.words", text, asInt)
