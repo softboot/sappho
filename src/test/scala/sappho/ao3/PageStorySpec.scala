@@ -17,5 +17,14 @@ class PageStorySpec extends AnyFunSpec {
     it("should have the right title") {
       assertResult("Powers of Invisibility")(story.title)
     }
+    it("should have the right word count") {
+      assertResult(246310)(story.wordCount)
+    }
+    it("should have the right score") {
+      assertResult(1378)(story.score)
+    }
+    it("should have the right number of views") {
+      assertResult(40660)(story.views)
+    }
   }
 }

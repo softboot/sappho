@@ -9,4 +9,8 @@ trait Story {
   def url: URL
 
   def title: String
+
+  def wordCount: Int
+  def score: Int
+  def views: Int
 }
