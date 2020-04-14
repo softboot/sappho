@@ -26,5 +26,17 @@ class PageStorySpec extends AnyFunSpec {
     it("should have the right number of views") {
       assertResult(40660)(story.views)
     }
+    it("should have the right number of chapters") {
+      assertResult(31)(story.chapterCount)
+    }
+    it("should have the right planned number of chapters") {
+      assertResult(Some(31))(story.plannedChapterCount)
+    }
+    it("should be complete") {
+      assertResult(true)(story.isComplete)
+    }
+    it("should not be a one-shot") {
+      assertResult(false)(story.isOneShot)
+    }
   }
 }
