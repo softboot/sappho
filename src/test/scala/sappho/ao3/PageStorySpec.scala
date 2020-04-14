@@ -1,5 +1,7 @@
 package sappho.ao3
 
+import java.time.LocalDate
+
 import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import org.scalatest.funspec.AnyFunSpec
 
@@ -19,6 +21,15 @@ class PageStorySpec extends AnyFunSpec {
     }
     it("should be in English") {
       assertResult("English")(story.language)
+    }
+    it("should be published on 2016-06-05") {
+      assertResult(LocalDate.of(2016, 6, 5))(story.publishedOn)
+    }
+    it("should be updated on 2017-02-19") {
+      assertResult(LocalDate.of(2017, 2, 19))(story.updatedOn)
+    }
+    it("should be completed on 2017-02-19") {
+      assertResult(Some(LocalDate.of(2017, 2, 19)))(story.completedOn)
     }
     it("should have the right word count") {
       assertResult(246310)(story.wordCount)

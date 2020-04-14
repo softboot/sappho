@@ -1,6 +1,7 @@
 package sappho
 
 import java.net.URL
+import java.time.LocalDate
 
 trait Story {
   def archive: Archive
@@ -10,6 +11,10 @@ trait Story {
 
   def title: String
   def language: String
+
+  def publishedOn: LocalDate
+  def updatedOn: LocalDate
+  def completedOn: Option[LocalDate]
 
   def wordCount: Int
   def score: Int

@@ -1,5 +1,8 @@
 package sappho.ao3
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
@@ -10,6 +13,10 @@ import sappho.ao3.Story._
 private class PageStory private(val storyId: Long, page: Document) extends Story {
   override def title: String = page >> text("h2.title")
   override def language: String = page >> text("dd.language")
+
+  override def publishedOn: LocalDate = LocalDate.parse(page >> text("dd.published"), ISO_LOCAL_DATE)
+  override def updatedOn: LocalDate = LocalDate.parse(page >> text("dd.status"), ISO_LOCAL_DATE)
+  override def completedOn: Option[LocalDate] = if(isComplete) Some(updatedOn) else None
 
   override def wordCount: Int = page >> extractor("dd.words", text, asInt)
   override def score: Int = page >> extractor("dd.kudos", text, asInt)
