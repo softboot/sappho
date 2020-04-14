@@ -19,7 +19,7 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def completedOn: Option[LocalDate] = if(isComplete) Some(updatedOn) else None
 
   override def wordCount: Int = page >> extractor("dd.words", text, asInt)
-  override def score: Int = page >> extractor("dd.kudos", text, asInt)
+  override def score: Int = (page >?> extractor("dd.kudos", text, asInt)).getOrElse(0)
   override def views: Int = page >> extractor("dd.hits", text, asInt)
 
   override def chapterCount: Int = progress(0).toInt
