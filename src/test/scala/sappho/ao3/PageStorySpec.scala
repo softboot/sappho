@@ -6,12 +6,17 @@ import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import org.scalatest.funspec.AnyFunSpec
 
 class PageStorySpec extends AnyFunSpec {
-  implicit val browser: Browser = JsoupBrowser()
+  private implicit val browser: Browser = JsoupBrowser()
 
+  private def load(storyId: Long, fileName: String): Story = {
+    val page = browser.parseFile("resources/test/ao3/" + fileName)
+    PageStory.makePreloaded(storyId, page)
+  }
+
+  //Complete multi-chapter work by one author.
   describe("Powers of Invisibility") {
     val id = 7094683L
-    val page = browser.parseFile("resources/test/ao3/poi.html")
-    val story = sappho.ao3.PageStory.makePreloaded(id, page)
+    val story = load(id, "poi.html")
 
     it("should have the right story id") {
       assertResult(id)(story.storyId)
@@ -51,6 +56,66 @@ class PageStorySpec extends AnyFunSpec {
     }
     it("should not be a one-shot") {
       assertResult(false)(story.isOneShot)
+    }
+  }
+
+  //Incomplete multi-chapter collaboration.
+  describe("Lost In The Time Stream") {
+    val story = load(7077178L, "litts.html")
+
+    it("should have the right title") {
+      assertResult("Lost In The Time Stream")(story.title)
+    }
+    it("should be published on 2016-06-03") {
+      assertResult(LocalDate.of(2016, 6, 3))(story.publishedOn)
+    }
+    it("should be updated on 2018-06-24") {
+      assertResult(LocalDate.of(2018, 6, 24))(story.updatedOn)
+    }
+    it("should not have a completion date") {
+      assertResult(None)(story.completedOn)
+    }
+    it("should have the right number of chapters") {
+      assertResult(11)(story.chapterCount)
+    }
+    it("should have an unknown planned number of chapters") {
+      assertResult(None)(story.plannedChapterCount)
+    }
+    it("should not be complete") {
+      assertResult(false)(story.isComplete)
+    }
+    it("should not be a one-shot") {
+      assertResult(false)(story.isOneShot)
+    }
+  }
+
+  //One-shot published under a pseudonym.
+  describe("Living Arrangements") {
+    val story = load(23191339L, "la.html")
+
+    it("should have the right title") {
+      assertResult("Living Arrangements")(story.title)
+    }
+    it("should be published on 2020-03-17") {
+      assertResult(LocalDate.of(2020, 3, 17))(story.publishedOn)
+    }
+    it("should have an update date equal to its publication date") {
+      assertResult(LocalDate.of(2020, 3, 17))(story.updatedOn)
+    }
+    it("should have a completion date equal to its publication date") {
+      assertResult(Some(LocalDate.of(2020, 3, 17)))(story.completedOn)
+    }
+    it("should have one chapter") {
+      assertResult(1)(story.chapterCount)
+    }
+    it("should have one planned chapter") {
+      assertResult(Some(1))(story.plannedChapterCount)
+    }
+    it("should be complete") {
+      assertResult(true)(story.isComplete)
+    }
+    it("should be a one-shot") {
+      assertResult(true)(story.isOneShot)
     }
   }
 }
