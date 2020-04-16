@@ -10,6 +10,7 @@ trait Story {
   def url: URL
 
   def title: String
+  def authors: Seq[Author]
   def language: String
 
   def publishedOn: LocalDate

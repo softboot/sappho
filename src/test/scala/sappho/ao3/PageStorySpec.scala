@@ -24,6 +24,15 @@ class PageStorySpec extends AnyFunSpec {
     it("should have the right title") {
       assertResult("Powers of Invisibility")(story.title)
     }
+    it("should have the right author") {
+      assert(story.authors.map(_.name).contains("yestomiraculous"))
+    }
+    it("should have only one author") {
+      assertResult(1)(story.authors.length)
+    }
+    it("should not be published under a pseudonym") {
+      assert(!story.authors.exists(_.isPseud))
+    }
     it("should be in English") {
       assertResult("English")(story.language)
     }
@@ -66,6 +75,16 @@ class PageStorySpec extends AnyFunSpec {
     it("should have the right title") {
       assertResult("Lost In The Time Stream")(story.title)
     }
+    it("should have only two authors") {
+      assertResult(2)(story.authors.length)
+    }
+    it("should have the right two authors") {
+      val authorSet = story.authors.map(_.name).toSet
+      assertResult(Set("Leisey", "wonderfulwizardofthozz"))(authorSet)
+    }
+    it("should not be published under a pseudonym") {
+      assert(!story.authors.exists(_.isPseud))
+    }
     it("should be published on 2016-06-03") {
       assertResult(LocalDate.of(2016, 6, 3))(story.publishedOn)
     }
@@ -95,6 +114,18 @@ class PageStorySpec extends AnyFunSpec {
 
     it("should have the right title") {
       assertResult("Living Arrangements")(story.title)
+    }
+    it("should have only one author") {
+      assertResult(1)(story.authors.length)
+    }
+    it("should be published by the right user") {
+      assertResult("dimensionhoppingrose")(story.authors(0).user.name)
+    }
+    it("should be published under a pseudonym") {
+      assert(story.authors(0).isPseud)
+    }
+    it("should be published under the correct pseudonym") {
+      assertResult("lenasmagic")(story.authors(0).name)
     }
     it("should be published on 2020-03-17") {
       assertResult(LocalDate.of(2020, 3, 17))(story.publishedOn)

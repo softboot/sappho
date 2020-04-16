@@ -12,6 +12,9 @@ import sappho.ao3.Story._
 
 private class PageStory private(val storyId: Long, page: Document) extends Story {
   override def title: String = page >> text("h2.title")
+
+  override def authors: Seq[Author] = ???
+
   override def language: String = page >> text("dd.language")
 
   override def publishedOn: LocalDate = LocalDate.parse(page >> text("dd.published"), ISO_LOCAL_DATE)

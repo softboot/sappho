@@ -6,6 +6,8 @@ trait Story extends sappho.Story {
   final override def archive: Archive.type = Archive
 
   final override def url: URL = Story.urlByStoryId(storyId)
+
+  override def authors: Seq[Author]
 }
 
 object Story {
