@@ -46,7 +46,7 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
 
 private object PageStory {
   def load(storyId: Long, browser: Browser): PageStory = {
-    def url = urlByStoryId(storyId)
+    def url = urlByStoryId(storyId) + "?view_adult=true"
     def page = browser.get(url.toString)
     makePreloaded(storyId, page)
   }
