@@ -40,6 +40,8 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def isComplete: Boolean = progress(0) == progress(1)
   override def isOneShot: Boolean = chapterCount == 1 && isComplete
 
+  override def chapters: Chapters = ???
+
 
   private lazy val progress = (page >> text("dd.chapters")).split("/")
 }

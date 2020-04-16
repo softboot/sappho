@@ -8,6 +8,7 @@ trait Story extends sappho.Story {
   final override def url: URL = Story.urlByStoryId(storyId)
 
   override def authors: Seq[Author]
+  override def chapters: Chapters
 }
 
 object Story {
