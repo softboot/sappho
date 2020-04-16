@@ -35,15 +35,12 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def score: Int = (page >?> extractor("dd.kudos", text, asInt)).getOrElse(0)
   override def views: Int = page >> extractor("dd.hits", text, asInt)
 
-  override def chapterCount: Int = progress(0).toInt
-  override def plannedChapterCount: Option[Int] = progress(1).toIntOption
-  override def isComplete: Boolean = progress(0) == progress(1)
+  override def chapterCount: Int = chapters.count
+  override def plannedChapterCount: Option[Int] = chapters.plannedCount
+  override def isComplete: Boolean = plannedChapterCount.contains(chapterCount)
   override def isOneShot: Boolean = chapterCount == 1 && isComplete
 
-  override def chapters: Chapters = ???
-
-
-  private lazy val progress = (page >> text("dd.chapters")).split("/")
+  override lazy val chapters: Chapters = new MultipleChapters(page)
 }
 
 private object PageStory {
