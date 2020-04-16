@@ -1,10 +1,32 @@
 package sappho.ao3
-import java.net.{URL, URLEncoder}
+
+import java.net.{URL, URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
+
+import scala.util.matching.Regex
 
 sealed abstract class Author extends sappho.Author {
   def isPseud: Boolean
   def user: User
+}
+object Author {
+  val urlPattern: Regex = "/users/([^/]*)/pseuds/([^/]*)$".r
+
+  def apply(user: String, pseud: String): Author = {
+    pseud match {
+      case `user` => User(user)
+      case _ => Pseud(user, pseud)
+    }
+  }
+
+  def fromUrl(url: String): Author = {
+    url match {
+      case urlPattern(user, pseud) =>
+        val decodedUser = URLDecoder.decode(user, StandardCharsets.UTF_8)
+        val decodedPseud = URLDecoder.decode(pseud, StandardCharsets.UTF_8)
+        Author(decodedUser, decodedPseud)
+    }
+  }
 }
 
 final case class User private(name: String) extends Author {

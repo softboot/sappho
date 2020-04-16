@@ -13,7 +13,13 @@ import sappho.ao3.Story._
 private class PageStory private(val storyId: Long, page: Document) extends Story {
   override def title: String = page >> text("h2.title")
 
-  override def authors: Seq[Author] = ???
+  override def authors: Seq[Author] = {
+    (page >> elementList("h3 a[rel=author]"))
+      .iterator
+      .map(a => a attr "href")
+      .map(href => Author.fromUrl(href))
+      .toIndexedSeq
+  }
 
   override def language: String = page >> text("dd.language")
 
