@@ -21,8 +21,6 @@ trait Story {
   def score: Int
   def views: Int
 
-  def chapterCount: Int
-  def plannedChapterCount: Option[Int]
   def isComplete: Boolean
   def isOneShot: Boolean
 

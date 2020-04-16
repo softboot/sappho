@@ -54,12 +54,6 @@ class PageStorySpec extends AnyFunSpec {
     it("should have the right number of views") {
       assertResult(40660)(story.views)
     }
-    it("should have the right number of chapters") {
-      assertResult(31)(story.chapterCount)
-    }
-    it("should have the right planned number of chapters") {
-      assertResult(Some(31))(story.plannedChapterCount)
-    }
     it("should be complete") {
       assertResult(true)(story.isComplete)
     }
@@ -93,12 +87,6 @@ class PageStorySpec extends AnyFunSpec {
     }
     it("should not have a completion date") {
       assertResult(None)(story.completedOn)
-    }
-    it("should have the right number of chapters") {
-      assertResult(11)(story.chapterCount)
-    }
-    it("should have an unknown planned number of chapters") {
-      assertResult(None)(story.plannedChapterCount)
     }
     it("should not be complete") {
       assertResult(false)(story.isComplete)
@@ -135,12 +123,6 @@ class PageStorySpec extends AnyFunSpec {
     }
     it("should have a completion date equal to its publication date") {
       assertResult(Some(LocalDate.of(2020, 3, 17)))(story.completedOn)
-    }
-    it("should have one chapter") {
-      assertResult(1)(story.chapterCount)
-    }
-    it("should have one planned chapter") {
-      assertResult(Some(1))(story.plannedChapterCount)
     }
     it("should be complete") {
       assertResult(true)(story.isComplete)
