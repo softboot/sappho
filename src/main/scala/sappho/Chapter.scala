@@ -3,7 +3,7 @@ package sappho
 import java.net.URL
 import java.time.LocalDate
 
-trait Chapter {
+trait Chapter extends Text {
   def archive: Archive
   def story: Story
 

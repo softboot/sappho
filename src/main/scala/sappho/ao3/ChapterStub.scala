@@ -5,4 +5,6 @@ private class ChapterStub(val story: Story, val chapterIndex: Int, provider: Cha
   override def chapterId: Long = provider.pollChapterId(chapterIndex)
   override def title: String = provider.pollTitle(chapterIndex)
   override def postedOn: LocalDate = provider.pollDate(chapterIndex)
+
+  override def paragraphs: Iterable[String] = ???
 }
