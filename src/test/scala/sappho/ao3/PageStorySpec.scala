@@ -4,14 +4,25 @@ import java.time.LocalDate
 
 import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.OneInstancePerTest
 import org.scalatest.funspec.AnyFunSpec
 
-class PageStorySpec extends AnyFunSpec with MockFactory {
+class PageStorySpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
   private val underlyingBrowser = JsoupBrowser()
-  private val mockBrowser: Browser = stub[Browser]
-  mockUrl("https://archiveofourown.org/works/7094683?view_adult=true", "resources/test/ao3/poi.html")
-  mockUrl("https://archiveofourown.org/works/7077178?view_adult=true", "resources/test/ao3/litts.html")
-  mockUrl("https://archiveofourown.org/works/23191339?view_adult=true", "resources/test/ao3/la.html")
+  private val mockBrowser = stub[Browser]
+
+  private val mockMap = Map(
+    "https://archiveofourown.org/works/7094683?view_adult=true" -> "resources/test/ao3/poi.html",
+    "https://archiveofourown.org/works/7077178?view_adult=true" -> "resources/test/ao3/litts.html",
+    "https://archiveofourown.org/works/23191339?view_adult=true" -> "resources/test/ao3/la.html"
+  )
+
+  (mockBrowser.get(_: String))
+    .when(*)
+    .onCall((url: String) => {
+      val file = mockMap.getOrElse(url, "resources/test/ao3/poi.html")
+      underlyingBrowser.parseFile(file).asInstanceOf[mockBrowser.DocumentType]
+    })
 
   //Complete multi-chapter work by one author.
   describe("Powers of Invisibility") {
@@ -130,13 +141,5 @@ class PageStorySpec extends AnyFunSpec with MockFactory {
     it("should be a one-shot") {
       assertResult(true)(story.isOneShot)
     }
-  }
-
-
-  // Bind URL addresses to test file paths
-  private def mockUrl(url: String, file: String): Unit = {
-    val page = underlyingBrowser.parseFile(file)
-      .asInstanceOf[PageStorySpec.this.mockBrowser.DocumentType]
-    (mockBrowser get _) when url returns page
   }
 }

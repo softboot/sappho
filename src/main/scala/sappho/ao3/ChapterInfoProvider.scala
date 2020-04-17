@@ -1,5 +1,7 @@
 package sappho.ao3
 
+import java.time.LocalDate
+
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
@@ -10,10 +12,12 @@ private trait ChapterInfoProvider {
 
   def pollChapterId(chapterIndex: Int): Long
   def pollTitle(chapterIndex: Int): String
+  def pollDate(chapterIndex: Int): LocalDate
 }
 
 private class DropdownListChapterInfoProvider(val story: Story, browser: Browser, page: Document) extends ChapterInfoProvider {
   private val list = (page >> element("#selected_id")).children.toIndexedSeq
+  private lazy val navigationProvider = new NavigationChapterInfoProvider(story, browser)
 
   override def pollChapterId(chapterIndex: Int): Long = {
     list(chapterIndex)
@@ -26,6 +30,8 @@ private class DropdownListChapterInfoProvider(val story: Story, browser: Browser
     val text = list(chapterIndex).text
     text.substring(prefix.length)
   }
+
+  override def pollDate(chapterIndex: Int): LocalDate = navigationProvider.pollDate(chapterIndex)
 }
 
 private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider {
@@ -43,4 +49,6 @@ private class NavigationChapterInfoProvider(val story: Story, browser: Browser) 
     val text = (list(chapterIndex) >> element("a")).text
     text.substring(prefix.length)
   }
+
+  override def pollDate(chapterIndex: Int): LocalDate = ???
 }

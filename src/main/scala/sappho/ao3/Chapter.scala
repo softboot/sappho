@@ -7,11 +7,6 @@ trait Chapter extends sappho.Chapter {
   final override def url: URL = Chapter.urlById(story.storyId, chapterId)
 
   def story: Story
-
-  def chapterId: Long
-  def chapterIndex: Int
-
-  def title: String
 }
 
 object Chapter {
