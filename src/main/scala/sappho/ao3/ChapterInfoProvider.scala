@@ -6,11 +6,13 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
 
 private trait ChapterInfoProvider {
+  def story: Story
+
   def pollChapterId(chapterIndex: Int): Long
   def pollTitle(chapterIndex: Int): String
 }
 
-private class DropdownListChapterInfoProvider(page: Document) extends ChapterInfoProvider {
+private class DropdownListChapterInfoProvider(val story: Story, browser: Browser, page: Document) extends ChapterInfoProvider {
   private val list = (page >> element("#selected_id")).children.toIndexedSeq
 
   override def pollChapterId(chapterIndex: Int): Long = {
@@ -26,7 +28,8 @@ private class DropdownListChapterInfoProvider(page: Document) extends ChapterInf
   }
 }
 
-private class NavigationChapterInfoProvider private(navigationPage: Document) extends ChapterInfoProvider {
+private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider {
+  private val navigationPage = browser.get(story.url + "/navigate")
   private val list = (navigationPage >> element("ol.chapter")).children.toIndexedSeq
 
   override def pollChapterId(chapterIndex: Int): Long = {
@@ -39,16 +42,5 @@ private class NavigationChapterInfoProvider private(navigationPage: Document) ex
     val prefix = (chapterIndex + 1) + ". "
     val text = (list(chapterIndex) >> element("a")).text
     text.substring(prefix.length)
-  }
-}
-private object NavigationChapterInfoProvider {
-  def load(story: Story)(implicit browser: Browser): NavigationChapterInfoProvider = {
-    val url = story.url.toString + "/navigate"
-    val navigationPage = browser.get(url)
-    makePreloaded(navigationPage)
-  }
-
-  def makePreloaded(navigationPage: Document): NavigationChapterInfoProvider = {
-    new NavigationChapterInfoProvider(navigationPage)
   }
 }
