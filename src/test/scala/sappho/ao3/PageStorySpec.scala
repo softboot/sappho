@@ -16,7 +16,7 @@ class PageStorySpec extends AnyFunSpec with MockFactory {
   //Complete multi-chapter work by one author.
   describe("Powers of Invisibility") {
     val id = 7094683L
-    val story = PageStory.load(id, mockBrowser)
+    val story = new PageStory(id, mockBrowser)
 
     it("should have the right story id") {
       assertResult(id)(story.storyId)
@@ -64,7 +64,7 @@ class PageStorySpec extends AnyFunSpec with MockFactory {
 
   //Incomplete multi-chapter collaboration.
   describe("Lost In The Time Stream") {
-    val story = PageStory.load(7077178, mockBrowser)
+    val story = new PageStory(7077178, mockBrowser)
 
     it("should have the right title") {
       assertResult("Lost In The Time Stream")(story.title)
@@ -98,7 +98,7 @@ class PageStorySpec extends AnyFunSpec with MockFactory {
 
   //One-shot published under a pseudonym.
   describe("Living Arrangements") {
-    val story = PageStory.load(23191339, mockBrowser)
+    val story = new PageStory(23191339, mockBrowser)
 
     it("should have the right title") {
       assertResult("Living Arrangements")(story.title)

@@ -13,7 +13,7 @@ class ChapterSpec extends AnyFunSpec with MockFactory {
 
   //Complete multi-chapter work.
   describe("Powers of Invisibility") {
-    val story = PageStory.load(7094683, mockBrowser)
+    val story = new PageStory(7094683, mockBrowser)
 
     it("should have the right number of chapters") {
       assertResult(31)(story.chapters.count)
@@ -41,7 +41,7 @@ class ChapterSpec extends AnyFunSpec with MockFactory {
 
   //Incomplete multi-chapter work.
   describe("Lost In The Time Stream") {
-    val story = PageStory.load(7077178, mockBrowser)
+    val story = new PageStory(7077178, mockBrowser)
 
     it("should have the right number of chapters") {
       assertResult(11)(story.chapters.count)
@@ -69,7 +69,7 @@ class ChapterSpec extends AnyFunSpec with MockFactory {
 
   //One-shot.
   describe("Living Arrangements") {
-    val story = PageStory.load(23191339, mockBrowser)
+    val story = new PageStory(23191339, mockBrowser)
 
     it("should have one chapter") {
       assertResult(1)(story.chapters.count)

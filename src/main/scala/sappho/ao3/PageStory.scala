@@ -10,7 +10,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
 import sappho.ao3.Story._
 
-private class PageStory private(val storyId: Long, page: Document) extends Story {
+private class PageStory(val storyId: Long, browser: Browser) extends Story {
+  private val page: Document = browser.get(urlByStoryId(storyId) + "?view_adult=true")
+
   override def title: String = page >> text("h2.title")
 
   override def authors: Seq[Author] = {
@@ -39,16 +41,4 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def isOneShot: Boolean = chapters.count == 1 && isComplete
 
   override lazy val chapters: Chapters = new MultipleChapters(this, page)
-}
-
-private object PageStory {
-  def load(storyId: Long, browser: Browser): PageStory = {
-    def url = urlByStoryId(storyId) + "?view_adult=true"
-    def page = browser.get(url.toString)
-    makePreloaded(storyId, page)
-  }
-
-  def makePreloaded(storyId: Long, preloadedPage: Document): PageStory = {
-    new PageStory(storyId, preloadedPage)
-  }
 }
