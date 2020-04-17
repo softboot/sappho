@@ -6,7 +6,7 @@ import net.ruippeixotog.scalascraper.model._
 
 private class MultipleChapters(story: Story, page: Document) extends Chapters {
   private val progress = (page >> text("dd.chapters")).split("/")
-  private val provider = new DropdownListChapterInfoProvider(page)
+  private lazy val provider = new DropdownListChapterInfoProvider(page)
 
   override def count: Int = progress(0).toInt
   override def plannedCount: Option[Int] = progress(1).toIntOption

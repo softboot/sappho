@@ -10,7 +10,7 @@ private trait ChapterInfoProvider {
 }
 
 private class DropdownListChapterInfoProvider(page: Document) extends ChapterInfoProvider {
-  private lazy val list = (page >> element("#selected_id")).children.toIndexedSeq
+  private val list = (page >> element("#selected_id")).children.toIndexedSeq
 
   override def pollChapterId(chapterIndex: Int): Long = {
     list(chapterIndex)
