@@ -3,7 +3,7 @@ package sappho
 import java.net.URL
 import java.time.LocalDate
 
-trait Story {
+trait Story extends Text {
   def archive: Archive
 
   def storyId: Long
@@ -25,4 +25,8 @@ trait Story {
   def isOneShot: Boolean
 
   def chapters: Chapters
+
+  override def paragraphs: Iterable[String] = chapters.iterator
+    .flatMap(ch => ch.paragraphs)
+    .to(Iterable)
 }
