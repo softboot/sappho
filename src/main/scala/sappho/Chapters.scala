@@ -3,6 +3,7 @@ package sappho
 trait Chapters extends IndexedSeq[Chapter] {
   def count: Int
   def plannedCount: Option[Int]
+  def progress: Option[Double] = plannedCount.map(d => count.toDouble / d)
 
   def apply(i: Int): Chapter
 
