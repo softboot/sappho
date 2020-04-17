@@ -2,8 +2,6 @@ package sappho.ao3
 
 import java.net.URL
 
-import sappho.Story
-
 trait Chapter extends sappho.Chapter {
   final override def archive: Archive.type = Archive
   final override def url: URL = Chapter.urlById(story.storyId, chapterId)

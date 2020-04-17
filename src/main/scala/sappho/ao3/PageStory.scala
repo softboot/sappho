@@ -38,7 +38,7 @@ private class PageStory private(val storyId: Long, page: Document) extends Story
   override def isComplete: Boolean = chapters.plannedCount.contains(chapters.count)
   override def isOneShot: Boolean = chapters.count == 1 && isComplete
 
-  override lazy val chapters: Chapters = new MultipleChapters(page)
+  override lazy val chapters: Chapters = new MultipleChapters(this, page)
 }
 
 private object PageStory {
