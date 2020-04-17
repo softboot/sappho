@@ -12,5 +12,5 @@ trait Story extends sappho.Story {
 }
 
 object Story {
-  def urlByStoryId(storyId: Long): URL = new URL(s"https://archiveofourown.org/works/$storyId/")
+  def urlByStoryId(storyId: Long): URL = new URL(s"https://archiveofourown.org/works/$storyId")
 }
