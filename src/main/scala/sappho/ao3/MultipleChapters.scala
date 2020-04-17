@@ -15,6 +15,10 @@ private class MultipleChapters(story: Story, browser: Browser, page: Document) e
   override def apply(chapterIndex: Int): Chapter = {
     if(chapterIndex < 0 || chapterIndex >= count)
       throw new IndexOutOfBoundsException(chapterIndex)
+
+    if(chapterIndex == 0)
+      PageChapter.first(story, page, provider)
+
     new ChapterStub(story, chapterIndex, browser, provider)
   }
 }

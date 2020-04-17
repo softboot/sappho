@@ -34,4 +34,10 @@ private object PageChapter {
     val page = browser.get(Chapter.urlById(story.storyId, chapterId) + "?view_adult=true")
     new PageChapter(story, chapterIndex, chapterId, page, provider)
   }
+
+  def first(story: Story, page: Document, provider: ChapterInfoProvider): PageChapter = {
+    val chapterIndex = 0
+    val chapterId = provider.pollChapterId(chapterIndex)
+    new PageChapter(story, chapterIndex, chapterId, page, provider)
+  }
 }
