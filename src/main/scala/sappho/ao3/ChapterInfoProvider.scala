@@ -19,7 +19,7 @@ private class DropdownListChapterInfoProvider(page: Document) extends ChapterInf
   }
 
   override def pollTitle(chapterIndex: Int): String = {
-    val prefix = chapterIndex + ". "
+    val prefix = (chapterIndex + 1) + ". "
     val text = list(chapterIndex).text
     text.substring(prefix.length)
   }

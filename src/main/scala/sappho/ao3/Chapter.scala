@@ -9,7 +9,7 @@ trait Chapter extends sappho.Chapter {
   def story: Story
 
   def chapterId: Long
-  def chapterNumber: Int
+  def chapterIndex: Int
 
   def title: String
 }

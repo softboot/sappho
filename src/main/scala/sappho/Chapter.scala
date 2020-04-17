@@ -7,7 +7,7 @@ trait Chapter {
   def story: Story
 
   def chapterId: Long
-  def chapterNumber: Int
+  def chapterIndex: Int
   def url: URL
 
   def title: String
