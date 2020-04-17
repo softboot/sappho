@@ -37,8 +37,13 @@ private class PageStory(val storyId: Long, browser: Browser) extends Story {
   override def score: Int = (page >?> extractor("dd.kudos", text, asInt)).getOrElse(0)
   override def views: Int = page >> extractor("dd.hits", text, asInt)
 
-  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.count)
-  override def isOneShot: Boolean = chapters.count == 1 && isComplete
+  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.length)
+  override def isOneShot: Boolean = chapters.length == 1 && isComplete
 
-  override lazy val chapters: Chapters = new MultipleChapters(this, browser, page)
+  override lazy val chapters: Chapters = {
+    (page >> text("dd.chapters")) match {
+      case "1/1" => new OneShotChapters(this, browser, page)
+      case _ => new MultipleChapters(this, browser, page)
+    }
+  }
 }
