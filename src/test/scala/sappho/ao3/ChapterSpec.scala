@@ -1,19 +1,19 @@
 package sappho.ao3
 
 import net.ruippeixotog.scalascraper.browser.{Browser, JsoupBrowser}
+import org.scalamock.scalatest.MockFactory
 import org.scalatest.funspec.AnyFunSpec
 
-class ChapterSpec extends AnyFunSpec {
-  private implicit val browser: Browser = JsoupBrowser()
-
-  private def load(storyId: Long, fileName: String): Story = {
-    val page = browser.parseFile("resources/test/ao3/" + fileName)
-    PageStory.makePreloaded(storyId, page)
-  }
+class ChapterSpec extends AnyFunSpec with MockFactory {
+  private val underlyingBrowser = JsoupBrowser()
+  private val mockBrowser: Browser = stub[Browser]
+  mockUrl("https://archiveofourown.org/works/7094683?view_adult=true", "resources/test/ao3/poi.html")
+  mockUrl("https://archiveofourown.org/works/7077178?view_adult=true", "resources/test/ao3/litts.html")
+  mockUrl("https://archiveofourown.org/works/23191339?view_adult=true", "resources/test/ao3/la.html")
 
   //Complete multi-chapter work.
   describe("Powers of Invisibility") {
-    val story = load(7094683L, "poi.html")
+    val story = PageStory.load(7094683, mockBrowser)
 
     it("should have the right number of chapters") {
       assertResult(31)(story.chapters.count)
@@ -41,7 +41,7 @@ class ChapterSpec extends AnyFunSpec {
 
   //Incomplete multi-chapter work.
   describe("Lost In The Time Stream") {
-    val story = load(7077178L, "litts.html")
+    val story = PageStory.load(7077178, mockBrowser)
 
     it("should have the right number of chapters") {
       assertResult(11)(story.chapters.count)
@@ -69,7 +69,7 @@ class ChapterSpec extends AnyFunSpec {
 
   //One-shot.
   describe("Living Arrangements") {
-    val story = load(23191339L, "la.html")
+    val story = PageStory.load(23191339, mockBrowser)
 
     it("should have one chapter") {
       assertResult(1)(story.chapters.count)
@@ -83,5 +83,14 @@ class ChapterSpec extends AnyFunSpec {
         assertResult("Chapter 1")(story.chapters(0).title)
       }
     }
+  }
+
+
+
+  // Bind URL addresses to test file paths
+  private def mockUrl(url: String, file: String): Unit = {
+    val page = underlyingBrowser.parseFile(file)
+      .asInstanceOf[ChapterSpec.this.mockBrowser.DocumentType]
+    (mockBrowser get _) when url returns page
   }
 }
