@@ -1,6 +1,7 @@
 package sappho.ao3
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
@@ -35,6 +36,8 @@ private class DropdownListChapterInfoProvider(val story: Story, browser: Browser
 }
 
 private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider {
+  import NavigationChapterInfoProvider._
+
   private val navigationPage = browser.get(story.url + "/navigate")
   private val list = (navigationPage >> element("ol.chapter")).children.toIndexedSeq
 
@@ -50,5 +53,10 @@ private class NavigationChapterInfoProvider(val story: Story, browser: Browser) 
     text.substring(prefix.length)
   }
 
-  override def pollDate(chapterIndex: Int): LocalDate = ???
+  override def pollDate(chapterIndex: Int): LocalDate = {
+    LocalDate.parse(list(chapterIndex) >> text(".datetime"), dateFormat)
+  }
+}
+private object NavigationChapterInfoProvider {
+  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("(yyyy-MM-dd)")
 }
