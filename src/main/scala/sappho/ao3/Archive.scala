@@ -10,7 +10,7 @@ object Archive extends sappho.Archive {
 
   override def homepage: URL = new URL("https://archiveofourown.org/")
 
-  override def fetchStoryById(storyId: Long)(implicit browser: Browser): sappho.Story = {
+  override def fetchStoryById(storyId: Long)(implicit browser: Browser): Story = {
     PageStory.load(storyId, browser)
   }
 }
