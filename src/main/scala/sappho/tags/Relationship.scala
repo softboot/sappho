@@ -7,7 +7,7 @@ trait Relationship extends Tag {
 }
 
 object Relationship {
-  def unapply(tag: Relationship): String = tag.name
+  def unapply(tag: Relationship): Option[String] = Some(tag.name)
 
   trait Platonic extends Relationship {
     override def isPlatonic: Boolean = true
