@@ -13,7 +13,12 @@ case class Relationship(name: String) extends sappho.tags.Relationship {
   override def isRomantic: Boolean = sanitizedName.contains(romanticSeparator) &&
     !sanitizedName.contains(platonicSeparator)
 
-  override def characters: Option[Seq[String]] = Some(sanitizedName.split(separatorPattern))
+  override def characters: Option[Seq[String]] = {
+    if(isPlatonic || isRomantic)
+      Some(sanitizedName.split(separatorPattern))
+    else
+      None
+  }
 }
 object Relationship {
   private val platonicSeparator = " & "
