@@ -26,8 +26,8 @@ private class PageStory(val storyId: Long, browser: Browser) extends Story {
   }
 
 
-  override def tags: Iterable[Tag] = ratings ++ warnings ++ categories ++ fandoms ++
-    characters ++ relationships ++ freeform
+  override def tags: Iterable[Tag] = ratings ++ warnings ++ categories ++ genres ++
+    fandoms ++ characters ++ relationships ++ freeform
 
   override def ratings: Iterable[Rating] = (page >> texts("dd.rating.tags a.tag")).map(Rating(_))
 
@@ -35,15 +35,15 @@ private class PageStory(val storyId: Long, browser: Browser) extends Story {
 
   override def categories: Iterable[Category] = (page >> texts("dd.category.tags a.tag")).map(Category(_))
 
-  override def genres: Iterable[Genre] = ???
+  override def genres: Iterable[Genre] = Iterable.empty
 
-  override def fandoms: Iterable[Fandom] = (page >> texts("dd.fandom.tags a.tag")).map(Fandom(_))
+  override def fandoms: Iterable[Fandom] = (page >> texts("dd.fandom.tags a.tag")).map(Fandom)
 
-  override def characters: Iterable[Character] = (page >> texts("dd.character.tags a.tag")).map(Character(_))
+  override def characters: Iterable[Character] = (page >> texts("dd.character.tags a.tag")).map(Character)
 
   override def relationships: Iterable[Relationship] = (page >> texts("dd.relationship.tags a.tag")).map(Relationship(_))
 
-  override def freeform: Iterable[Freeform] = (page >> texts("dd.freeform.tags a.tag")).map(Freeform(_))
+  override def freeform: Iterable[Freeform] = (page >> texts("dd.freeform.tags a.tag")).map(Freeform)
   
 
   override def language: String = page >> text("dd.language")
