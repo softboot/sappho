@@ -9,6 +9,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
 import sappho.ao3.Story._
+import sappho.tags.{Category, Character, Fandom, Freeform, Genre, Rating, Relationship, Tag, Warning}
 
 private class PageStory(val storyId: Long, browser: Browser) extends Story {
   private val page: Document = browser.get(urlByStoryId(storyId) + "?view_adult=true")
@@ -22,6 +23,26 @@ private class PageStory(val storyId: Long, browser: Browser) extends Story {
       .map(href => Author.fromUrl(href))
       .toIndexedSeq
   }
+
+
+  override def tags: Iterable[Tag] = ???
+
+  override def ratings: Iterable[Rating] = ???
+
+  override def warnings: Iterable[Warning] = ???
+
+  override def categories: Iterable[Category] = ???
+
+  override def genres: Iterable[Genre] = ???
+
+  override def fandoms: Iterable[Fandom] = ???
+
+  override def characters: Iterable[Character] = ???
+
+  override def relationships: Iterable[Relationship] = ???
+
+  override def freeform: Iterable[Freeform] = ???
+  
 
   override def language: String = page >> text("dd.language")
 

@@ -3,7 +3,9 @@ package sappho
 import java.net.URL
 import java.time.LocalDate
 
-trait Story extends Text {
+import sappho.tags.Tags
+
+trait Story extends Text with Tags {
   def archive: Archive
 
   def storyId: Long
