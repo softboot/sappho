@@ -36,4 +36,18 @@ object Relationship {
         None
     }
   }
+
+  trait Other extends Relationship {
+    final override def isPlatonic: Boolean = false
+    final override def isRomantic: Boolean = false
+    final override def characters: None.type = None
+  }
+  object Other {
+    def unapply(relationship: Relationship): Option[String] = {
+      if(relationship.isRomantic || relationship.isPlatonic)
+        None
+      else
+        Some(relationship.name)
+    }
+  }
 }
