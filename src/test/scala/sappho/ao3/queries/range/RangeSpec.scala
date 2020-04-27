@@ -8,7 +8,7 @@ import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range}
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   describe("Infinite range of integers") {
-    val range: queries.range.Range[Int] = Range[Int](Infinite(), Infinite()).get
+    val range: queries.range.Range[Int] = Range[Int](Infinite, Infinite).get
 
     it("should contain any number") {
       assert(range contains 1)
@@ -19,7 +19,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-Inf, 4]") {
-    val range: queries.range.Range[Int] = Range(Infinite(), Inclusive(4)).get
+    val range: queries.range.Range[Int] = Range(Infinite, Inclusive(4)).get
 
     it("should contain 3") {
       assert(range contains 3)
@@ -36,7 +36,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-Inf, 4)") {
-    val range: queries.range.Range[Int] = Range(Infinite(), Exclusive(4)).get
+    val range: queries.range.Range[Int] = Range(Infinite, Exclusive(4)).get
 
     it("should contain 3") {
       assert(range contains 3)
@@ -53,7 +53,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range [4, +Inf)") {
-    val range: queries.range.Range[Int] = Range(Inclusive(4), Infinite()).get
+    val range: queries.range.Range[Int] = Range(Inclusive(4), Infinite).get
 
     it("should not contain 3") {
       assert(!(range contains 3))
@@ -70,7 +70,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (4, +Inf)") {
-    val range: queries.range.Range[Int] = Range(Exclusive(4), Infinite()).get
+    val range: queries.range.Range[Int] = Range(Exclusive(4), Infinite).get
 
     it("should not contain 3") {
       assert(!(range contains 3))
@@ -247,7 +247,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The unbounded range and itself") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite(), Infinite()).get
+    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
 
     it("should have a union equal to the unbounded range") {
       assertResult(Some(unbounded))(unbounded union unbounded)
@@ -257,7 +257,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
   }
   describe("The unbounded range and the singleton range [5;5]") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite(), Infinite()).get
+    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
     val singleton: range.Range[Int] = Range(Inclusive(5), Inclusive(5)).get
 
     it("should have a union equal to the unbounded range") {
@@ -268,7 +268,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
   }
   describe("The unbounded range and the finite range [2;3)") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite(), Infinite()).get
+    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
     val finite: range.Range[Int] = Range(Inclusive(2), Exclusive(3)).get
 
     it("should have a union equal to the unbounded range") {
@@ -279,8 +279,8 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
   }
   describe("The unbounded range and the infinite range (-Inf;4]") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite(), Infinite()).get
-    val infinite: range.Range[Int] = Range(Infinite(), Inclusive(4)).get
+    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
+    val infinite: range.Range[Int] = Range(Infinite, Inclusive(4)).get
 
     it("should have a union equal to the unbounded range") {
       assertResult(Some(unbounded))(unbounded union infinite)
@@ -290,8 +290,8 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
   }
   describe("The unbounded range and the infinite range (3;+Inf)") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite(), Infinite()).get
-    val infinite: range.Range[Int] = Range(Exclusive(3), Infinite()).get
+    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
+    val infinite: range.Range[Int] = Range(Exclusive(3), Infinite).get
 
     it("should have a union equal to the unbounded range") {
       assertResult(Some(unbounded))(unbounded union infinite)

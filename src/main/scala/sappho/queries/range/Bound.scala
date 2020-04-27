@@ -1,6 +1,6 @@
 package sappho.queries.range
 
-sealed trait Bound[T] {
+sealed trait Bound[+T] {
   def bound: Option[T]
 
   def isFinite: Boolean = false
@@ -11,8 +11,8 @@ sealed trait Bound[T] {
 object Bound {
   private[queries] def pickTightLoose[T](b1: Bound[T], b2: Bound[T])(implicit ordering: Ordering[T]): (Bound[T], Bound[T]) = {
     (b1, b2) match {
-      case (tight, loose@Infinite()) => (tight, loose)
-      case (loose@Infinite(), tight) => (tight, loose)
+      case (tight, loose@Infinite) => (tight, loose)
+      case (loose@Infinite, tight) => (tight, loose)
 
       case (Finite(x1), Finite(x2)) =>
         val cmp = ordering.compare(x1, x2)
@@ -44,7 +44,7 @@ object Bound {
   }
 }
 
-abstract sealed class Finite[T] extends Bound[T] {
+abstract sealed class Finite[+T] extends Bound[T] {
   def limit: T
   final override def bound: Some[T] = Some(limit)
   final override def isFinite: Boolean = true
@@ -53,15 +53,15 @@ object Finite {
   def unapply[T](finiteBound: Finite[T]): Option[T] = Some(finiteBound.limit)
 }
 
-final case class Inclusive[T](limit: T) extends Finite[T] {
+final case class Inclusive[+T](limit: T) extends Finite[T] {
   override def isInclusive: Boolean = true
 }
 
-final case class Exclusive[T](limit: T) extends Finite[T] {
+final case class Exclusive[+T](limit: T) extends Finite[T] {
   override def isExclusive: Boolean = true
 }
 
-final case class Infinite[T]() extends Bound[T] {
+case object Infinite extends Bound[Nothing] {
   override def bound: None.type = None
   override def isInfinite: Boolean = true
 }

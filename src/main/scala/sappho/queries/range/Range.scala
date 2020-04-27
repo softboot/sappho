@@ -24,25 +24,25 @@ final class Range[T] private(val lowerBound: Bound[T], val upperBound: Bound[T])
   private def fitsLeft(value: T): Boolean = lowerBound match {
     case Inclusive(a) => a <= value
     case Exclusive(a) => a < value
-    case Infinite() => true
+    case Infinite => true
   }
 
   private def fitsRight(value: T): Boolean = upperBound match {
     case Inclusive(b) => value <= b
     case Exclusive(b) => value < b
-    case Infinite() => true
+    case Infinite => true
   }
 
   override def toString: String = {
     val left = lowerBound match {
       case Inclusive(a) => "[" + a
       case Exclusive(a) => "(" + a
-      case Infinite() => "(-Inf"
+      case Infinite => "(-Inf"
     }
     val right = upperBound match {
       case Inclusive(a) => a + "]"
       case Exclusive(a) => a + ")"
-      case Infinite() => "+Inf)"
+      case Infinite => "+Inf)"
     }
     left + ";" + right
   }
@@ -75,7 +75,7 @@ object Range {
     import ordering.mkOrderingOps
 
     (lowerBound, upperBound) match {
-      case (Infinite(), _) | (_, Infinite()) => true
+      case (Infinite, _) | (_, Infinite) => true
       case (Inclusive(a), Inclusive(b)) => a <= b
       case (Finite(a), Finite(b)) => a < b
     }
