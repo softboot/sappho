@@ -2,13 +2,11 @@ package sappho.ao3.queries.range
 
 import org.scalatest.OneInstancePerTest
 import org.scalatest.funspec.AnyFunSpec
-import sappho.queries
-import sappho.queries.range
-import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range}
+import sappho.queries.range.{EmptyR, Exclusive, Inclusive, Infinite, Range}
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   describe("Infinite range of integers") {
-    val range: queries.range.Range[Int] = Range[Int](Infinite, Infinite).get
+    val range: Range[Int] = Range[Int](Infinite, Infinite)
 
     it("should contain any number") {
       assert(range contains 1)
@@ -19,7 +17,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-Inf, 4]") {
-    val range: queries.range.Range[Int] = Range(Infinite, Inclusive(4)).get
+    val range: Range[Int] = Range(Infinite, Inclusive(4))
 
     it("should contain 3") {
       assert(range contains 3)
@@ -36,7 +34,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-Inf, 4)") {
-    val range: queries.range.Range[Int] = Range(Infinite, Exclusive(4)).get
+    val range: Range[Int] = Range(Infinite, Exclusive(4))
 
     it("should contain 3") {
       assert(range contains 3)
@@ -53,7 +51,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range [4, +Inf)") {
-    val range: queries.range.Range[Int] = Range(Inclusive(4), Infinite).get
+    val range: Range[Int] = Range(Inclusive(4), Infinite)
 
     it("should not contain 3") {
       assert(!(range contains 3))
@@ -70,7 +68,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (4, +Inf)") {
-    val range: queries.range.Range[Int] = Range(Exclusive(4), Infinite).get
+    val range: Range[Int] = Range(Exclusive(4), Infinite)
 
     it("should not contain 3") {
       assert(!(range contains 3))
@@ -87,7 +85,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-7, 5)") {
-    val range: queries.range.Range[Int] = Range(Exclusive(-7), Exclusive(5)).get
+    val range: Range[Int] = Range(Exclusive(-7), Exclusive(5))
 
     it("should not contain (-8)") {
       assert(!(range contains (-8)))
@@ -113,7 +111,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range [2, 13)") {
-    val range: queries.range.Range[Int] = Range(Inclusive(2), Exclusive(13)).get
+    val range: Range[Int] = Range(Inclusive(2), Exclusive(13))
 
     it("should not contain 1") {
       assert(!(range contains 1))
@@ -139,7 +137,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range (-1, 5]") {
-    val range: queries.range.Range[Int] = Range(Exclusive(-1), Inclusive(5)).get
+    val range: Range[Int] = Range(Exclusive(-1), Inclusive(5))
 
     it("should not contain (-2)") {
       assert(!(range contains (-2)))
@@ -165,7 +163,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The range [3; 20]") {
-    val range: queries.range.Range[Int] = Range(Inclusive(3), Inclusive(20)).get
+    val range: Range[Int] = Range(Inclusive(3), Inclusive(20))
 
     it("should not contain 2") {
       assert(!(range contains 2))
@@ -191,113 +189,113 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
 
   describe("The singleton range [5;5]") {
-    val range: Option[queries.range.Range[Int]] = Range[Int](Inclusive(5), Inclusive(5))
+    val range: Range[Int] = Range[Int](Inclusive(5), Inclusive(5))
 
     it("should exist") {
-      assert(range.isDefined)
+      assert(!range.isEmpty)
     }
     it("should not contain 4") {
-      assert(!(range.get contains 4))
+      assert(!(range contains 4))
     }
     it("should contain its only element 5") {
-      assert(range.get contains 5)
+      assert(range contains 5)
     }
     it("should not contain 6") {
-      assert(!(range.get contains 6))
+      assert(!(range contains 6))
     }
     it("should have the correct string representation") {
-      assertResult("[5;5]")(range.get.toString)
+      assertResult("[5;5]")(range.toString)
     }
   }
   describe("The empty range (3;3]") {
     it("should not exist") {
-      assertResult(None)(Range(Exclusive(3), Inclusive(3)))
+      assertResult(EmptyR[Int]())(Range(Exclusive(3), Inclusive(3)))
     }
   }
   describe("The empty range [3;3)") {
     it("should not exist") {
-      assertResult(None)(Range(Inclusive(3), Exclusive(3)))
+      assertResult(EmptyR[Int]())(Range(Inclusive(3), Exclusive(3)))
     }
   }
   describe("The empty range (3;3)") {
     it("should not exist") {
-      assertResult(None)(Range(Exclusive(3), Exclusive(3)))
+      assertResult(EmptyR[Int]())(Range(Exclusive(3), Exclusive(3)))
     }
   }
 
   describe("The invalid range (5;2)") {
     it("should not exist") {
-      assertResult(None)(Range(Exclusive(5), Exclusive(2)))
+      assertResult(EmptyR[Int]())(Range(Exclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range [5;2)") {
     it("should not exist") {
-      assertResult(None)(Range(Inclusive(5), Exclusive(2)))
+      assertResult(EmptyR[Int]())(Range(Inclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range (5;2]") {
     it("should not exist") {
-      assertResult(None)(Range(Exclusive(5), Inclusive(2)))
+      assertResult(EmptyR[Int]())(Range(Exclusive(5), Inclusive(2)))
     }
   }
   describe("The invalid range [5;2]") {
     it("should not exist") {
-      assertResult(None)(Range(Inclusive(5), Inclusive(2)))
+      assertResult(EmptyR[Int]())(Range(Inclusive(5), Inclusive(2)))
     }
   }
 
   describe("The unbounded range and itself") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
+    val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
 
     it("should have a union equal to the unbounded range") {
-      assertResult(Some(unbounded))(unbounded union unbounded)
+      assertResult(unbounded)(unbounded union unbounded)
     }
     it("should have an intersection equal to the finite range") {
-      assertResult(Some(unbounded))(unbounded intersect unbounded)
+      assertResult(unbounded)(unbounded intersect unbounded)
     }
   }
   describe("The unbounded range and the singleton range [5;5]") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
-    val singleton: range.Range[Int] = Range(Inclusive(5), Inclusive(5)).get
+    val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
+    val singleton: Range[Int] = Range(Inclusive(5), Inclusive(5))
 
     it("should have a union equal to the unbounded range") {
-      assertResult(Some(unbounded))(unbounded union singleton)
+      assertResult(unbounded)(unbounded union singleton)
     }
     it("should have an intersection equal to the singleton range") {
-      assertResult(Some(singleton))(unbounded intersect singleton)
+      assertResult(singleton)(unbounded intersect singleton)
     }
   }
   describe("The unbounded range and the finite range [2;3)") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
-    val finite: range.Range[Int] = Range(Inclusive(2), Exclusive(3)).get
+    val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
+    val finite: Range[Int] = Range(Inclusive(2), Exclusive(3))
 
     it("should have a union equal to the unbounded range") {
-      assertResult(Some(unbounded))(unbounded union finite)
+      assertResult(unbounded)(unbounded union finite)
     }
     it("should have an intersection equal to the finite range") {
-      assertResult(Some(finite))(unbounded intersect finite)
+      assertResult(finite)(unbounded intersect finite)
     }
   }
   describe("The unbounded range and the infinite range (-Inf;4]") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
-    val infinite: range.Range[Int] = Range(Infinite, Inclusive(4)).get
+    val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
+    val infinite: Range[Int] = Range(Infinite, Inclusive(4))
 
     it("should have a union equal to the unbounded range") {
-      assertResult(Some(unbounded))(unbounded union infinite)
+      assertResult(unbounded)(unbounded union infinite)
     }
     it("should have an intersection equal to the infinite range") {
-      assertResult(Some(infinite))(unbounded intersect infinite)
+      assertResult(infinite)(unbounded intersect infinite)
     }
   }
   describe("The unbounded range and the infinite range (3;+Inf)") {
-    val unbounded: range.Range[Int] = Range[Int](Infinite, Infinite).get
-    val infinite: range.Range[Int] = Range(Exclusive(3), Infinite).get
+    val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
+    val infinite: Range[Int] = Range(Exclusive(3), Infinite)
 
     it("should have a union equal to the unbounded range") {
-      assertResult(Some(unbounded))(unbounded union infinite)
+      assertResult(unbounded)(unbounded union infinite)
     }
     it("should have an intersection equal to the infinite range") {
-      assertResult(Some(infinite))(unbounded intersect infinite)
+      assertResult(infinite)(unbounded intersect infinite)
     }
   }
 }
