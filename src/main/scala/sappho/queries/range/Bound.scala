@@ -1,4 +1,4 @@
-package sappho.queries
+package sappho.queries.range
 
 sealed trait Bound[T] {
   def bound: Option[T]

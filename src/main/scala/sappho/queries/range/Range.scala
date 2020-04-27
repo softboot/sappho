@@ -1,4 +1,4 @@
-package sappho.queries
+package sappho.queries.range
 
 final class Range[T] private(val lowerBound: Bound[T], val upperBound: Bound[T])(implicit ordering: Ordering[T]) {
   import ordering.mkOrderingOps
