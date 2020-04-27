@@ -6,6 +6,6 @@ case class RangeBuilder[T, R](inRange: Range[T] => R)(implicit ordering: Orderin
   
   def <(upperLimit: T): R = inRange(Range(Infinite(), Exclusive(upperLimit)).get)
   def <=(upperLimit: T): R = inRange(Range(Infinite(), Inclusive(upperLimit)).get)
-  def >(upperLimit: T): R = inRange(Range(Exclusive(upperLimit), Infinite()).get)
-  def >=(upperLimit: T): R = inRange(Range(Inclusive(upperLimit), Infinite()).get)
+  def >(lowerLimit: T): R = inRange(Range(Exclusive(lowerLimit), Infinite()).get)
+  def >=(lowerLimit: T): R = inRange(Range(Inclusive(lowerLimit), Infinite()).get)
 }
