@@ -56,6 +56,10 @@ final class Range[T] private(val lowerBound: Bound[T], val upperBound: Bound[T])
   }
 }
 object Range {
+  def singleton[T](onlyElement: T)(implicit ordering: Ordering[T]): Range[T] = {
+    new Range(Inclusive(onlyElement), Inclusive(onlyElement))
+  }
+
   def apply[T](lowerBound: Bound[T], upperBound: Bound[T])(implicit ordering: Ordering[T]): Option[Range[T]] = {
     if(isValidRange(lowerBound, upperBound))
       Some(new Range(lowerBound, upperBound))

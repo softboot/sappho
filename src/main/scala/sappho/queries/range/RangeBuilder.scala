@@ -8,4 +8,5 @@ case class RangeBuilder[T, R](inRange: Range[T] => R)(implicit ordering: Orderin
   def <=(upperLimit: T): R = inRange(Range(Infinite(), Inclusive(upperLimit)).get)
   def >(lowerLimit: T): R = inRange(Range(Exclusive(lowerLimit), Infinite()).get)
   def >=(lowerLimit: T): R = inRange(Range(Inclusive(lowerLimit), Infinite()).get)
+  def ==(exactValue: T): R = inRange(Range.singleton(exactValue))
 }
