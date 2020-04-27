@@ -76,4 +76,6 @@ object Range {
       case (Finite(a), Finite(b)) => a < b
     }
   }
+
+  def element[T](implicit ordering: Ordering[T]) = RangeBuilder[T, Range[T]](e => e)
 }
