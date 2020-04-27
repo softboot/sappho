@@ -257,7 +257,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
   describe("The unbounded range and the singleton range [5;5]") {
     val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
-    val singleton: Range[Int] = Range(Inclusive(5), Inclusive(5))
+    val singleton: Range[Int] = Range.Singleton(5)
 
     it("should have a union equal to the unbounded range") {
       assertResult(unbounded)(unbounded union singleton)

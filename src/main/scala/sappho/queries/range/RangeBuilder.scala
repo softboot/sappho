@@ -7,5 +7,5 @@ case class RangeBuilder[T, R](inRange: Range[T] => R)(implicit ordering: Orderin
   def <=(upperLimit: T): R = inRange(Range(Infinite, Inclusive(upperLimit)))
   def >(lowerLimit: T): R = inRange(Range(Exclusive(lowerLimit), Infinite))
   def >=(lowerLimit: T): R = inRange(Range(Inclusive(lowerLimit), Infinite))
-  def ==(exactValue: T): R = inRange(Range.singleton(exactValue))
+  def ==(exactValue: T): R = inRange(Range.Singleton(exactValue))
 }

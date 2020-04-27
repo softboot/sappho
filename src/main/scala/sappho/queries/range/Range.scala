@@ -2,15 +2,12 @@ package sappho.queries.range
 
 sealed trait Range[T] {
   def isEmpty: Boolean
+  def isSingleton: Boolean
   def contains(value: T): Boolean
   def intersect(other: Range[T]): Range[T]
   def union(other: Range[T]): Range[T]
 }
 object Range {
-  def singleton[T](onlyElement: T)(implicit ordering: Ordering[T]): Range[T] = {
-    new NotEmpty(Inclusive(onlyElement), Inclusive(onlyElement))
-  }
-
   def apply[T](lowerBound: Bound[T], upperBound: Bound[T])(implicit ordering: Ordering[T]): Range[T] = {
     if(isValidRange(lowerBound, upperBound))
       new NotEmpty(lowerBound, upperBound)
@@ -24,16 +21,32 @@ object Range {
 
   final case class Empty[T]() extends Range[T] {
     override def isEmpty: Boolean = true
+    override def isSingleton: Boolean = false
     override def contains(value: T) = false
     override def intersect(other: Range[T]) = this
     override def union(other: Range[T]) = other
     override def toString = "(empty range)"
   }
 
+  object Singleton {
+    def apply[T](onlyElement: T)(implicit ordering: Ordering[T]): Range[T] = {
+      new NotEmpty(Inclusive(onlyElement), Inclusive(onlyElement))
+    }
+
+    def unapply[T](range: NotEmpty[T]): Option[T] = {
+      if(range.isSingleton)
+        range.lowerBound.bound
+      else
+        None
+    }
+  }
+
   final class NotEmpty[T](val lowerBound: Bound[T], val upperBound: Bound[T])(implicit ordering: Ordering[T]) extends Range[T] {
     import ordering.mkOrderingOps
 
     override def isEmpty: Boolean = false
+
+    override def isSingleton: Boolean = lowerBound.isInclusive && lowerBound == upperBound
 
     override def contains(value: T): Boolean = fitsLeft(value) && fitsRight(value)
 
