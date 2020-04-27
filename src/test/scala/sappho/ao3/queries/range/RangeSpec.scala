@@ -2,7 +2,8 @@ package sappho.ao3.queries.range
 
 import org.scalatest.OneInstancePerTest
 import org.scalatest.funspec.AnyFunSpec
-import sappho.queries.range.{EmptyR, Exclusive, Inclusive, Infinite, Range}
+import sappho.queries.range.Range.Empty
+import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range};
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   describe("Infinite range of integers") {
@@ -209,38 +210,38 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
   describe("The empty range (3;3]") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Exclusive(3), Inclusive(3)))
+      assertResult(Empty[Int]())(Range(Exclusive(3), Inclusive(3)))
     }
   }
   describe("The empty range [3;3)") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Inclusive(3), Exclusive(3)))
+      assertResult(Empty[Int]())(Range(Inclusive(3), Exclusive(3)))
     }
   }
   describe("The empty range (3;3)") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Exclusive(3), Exclusive(3)))
+      assertResult(Empty[Int]())(Range(Exclusive(3), Exclusive(3)))
     }
   }
 
   describe("The invalid range (5;2)") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Exclusive(5), Exclusive(2)))
+      assertResult(Empty[Int]())(Range(Exclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range [5;2)") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Inclusive(5), Exclusive(2)))
+      assertResult(Empty[Int]())(Range(Inclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range (5;2]") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Exclusive(5), Inclusive(2)))
+      assertResult(Empty[Int]())(Range(Exclusive(5), Inclusive(2)))
     }
   }
   describe("The invalid range [5;2]") {
     it("should not exist") {
-      assertResult(EmptyR[Int]())(Range(Inclusive(5), Inclusive(2)))
+      assertResult(Empty[Int]())(Range(Inclusive(5), Inclusive(2)))
     }
   }
 
