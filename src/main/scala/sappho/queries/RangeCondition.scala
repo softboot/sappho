@@ -3,8 +3,8 @@ package sappho.queries
 import java.time.LocalDate
 
 import sappho.Story
-import sappho.queries.range.Range
-import sappho.queries.range.Range.Empty;
+import sappho.queries.range.Range.Empty
+import sappho.queries.range.{Infinite, Range};
 
 class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Option[T], val range: Range[T])
   extends Condition
@@ -35,11 +35,12 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
 }
 
 object RangeCondition {
-  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Clause = {
-    if(range.isEmpty)
-      False
-    else
-      new RangeCondition[T](criterion, extractor, range)
+  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Query = {
+    range match {
+      case Empty() => False
+      case Range(Infinite, Infinite) => True
+      case _ => new RangeCondition[T](criterion, extractor, range)
+    }
   }
 
   val WordCount = RangeCondition[Int](Criterion("wordCount"), story => Some(story.wordCount)) _

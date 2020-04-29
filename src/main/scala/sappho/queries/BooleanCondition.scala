@@ -20,7 +20,6 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
     case similar: BooleanCondition if similar.criterion == this.criterion =>
       this.filter and similar.filter match {
         case Neither => False
-        //case Either => True
         case newFilter => new BooleanCondition(criterion, predicate, newFilter)
       }
     case different: Condition => And(this, different)
@@ -37,9 +36,10 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
 }
 
 object BooleanCondition {
-  def apply(criterion: Criterion, predicate: Story => Boolean)(filter: BooleanFilter = Set): Clause = {
+  def apply(criterion: Criterion, predicate: Story => Boolean)(filter: BooleanFilter = Set): Query = {
     filter match {
       case Neither => False
+      case Either => True
       case _ => new BooleanCondition(criterion, predicate, filter)
     }
   }
