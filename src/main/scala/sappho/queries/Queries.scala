@@ -1,5 +1,7 @@
 package sappho.queries
 
+import java.time.LocalDate
+
 import sappho.queries.range.{Exclusive, FiniteRangeBuilder, Inclusive, RangeBuilder}
 
 object Queries {
@@ -12,6 +14,9 @@ object Queries {
 
   val isComplete = BooleanCondition.Complete
   val isOneShot = BooleanCondition.OneShot
+
+  val publishedOn = RangeBuilder[LocalDate, RangeCondition[LocalDate]](RangeCondition.PublishedOn)
+  val updatedOn = RangeBuilder[LocalDate, RangeCondition[LocalDate]](RangeCondition.UpdatedOn)
 
 
   abstract class LHS[T] {
@@ -30,5 +35,12 @@ object Queries {
   implicit class IntLHS(val leftLimit: Int) extends LHS[Int] {
     override def <[R](rangeBuilder: RangeBuilder[Int, R]): FiniteRangeBuilder[Int, R] = super.<(rangeBuilder)
     override def <=[R](rangeBuilder: RangeBuilder[Int, R]): FiniteRangeBuilder[Int, R] = super.<=(rangeBuilder)
+  }
+
+  implicit val localDateOrdering: Ordering[LocalDate] = _ compareTo _
+
+  implicit class LocalDateLHS(val leftLimit: LocalDate) extends LHS[LocalDate] {
+    override def <[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<(rangeBuilder)
+    override def <=[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<=(rangeBuilder)
   }
 }

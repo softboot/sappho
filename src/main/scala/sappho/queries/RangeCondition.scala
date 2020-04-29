@@ -1,5 +1,7 @@
 package sappho.queries
 
+import java.time.LocalDate
+
 import sappho.Story
 import sappho.queries.range.Range
 import sappho.queries.range.Range.Empty;
@@ -43,4 +45,7 @@ object RangeCondition {
 
   val ChapterCount = RangeCondition[Int](Criterion("chapterCount"), story => Some(story.chapters.length)) _
   val PlannedChapterCount = RangeCondition[Int](Criterion("plannedChapterCount"), story => story.chapters.plannedCount) _
+
+  val PublishedOn = RangeCondition[LocalDate](Criterion("publishedOn"), story => Some(story.publishedOn)) _
+  val UpdatedOn = RangeCondition[LocalDate](Criterion("updatedOn"), story => Some(story.updatedOn)) _
 }
