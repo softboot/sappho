@@ -43,4 +43,5 @@ object Queries {
 
   val publishedOn = RangeBuilder[LocalDate, Query](RangeCondition.PublishedOn)
   val updatedOn = RangeBuilder[LocalDate, Query](RangeCondition.UpdatedOn)
+  val completedOn = RangeBuilder[LocalDate, Query](range => isComplete && (updatedOn inRange range))
 }
