@@ -29,8 +29,8 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
     filter match {
       case Set => criterion.name
       case Unset => "!" + criterion.name
-      case Either => "true[BooleanCondition]"
-      case Neither => "false[BooleanCondition]"
+      case Either => "tautology[" + criterion.name + "]"
+      case Neither => "contradiction[" + criterion.name + "]"
     }
   }
 }

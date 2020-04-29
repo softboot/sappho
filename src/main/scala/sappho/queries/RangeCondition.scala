@@ -28,7 +28,7 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     case _ => ???
   }
 
-  override def toString(): String = s"${criterion.name} in range $range"
+  override def toString(): String = range.toConditionString(criterion.name)
 }
 
 object RangeCondition {

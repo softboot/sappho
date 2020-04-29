@@ -6,6 +6,8 @@ sealed trait Range[T] {
   def contains(value: T): Boolean
   def intersect(other: Range[T]): Range[T]
   def union(other: Range[T]): Option[Range[T]]
+  
+  def toConditionString(variable: String): String
 }
 object Range {
   def apply[T](lowerBound: Bound[T], upperBound: Bound[T])(implicit ordering: Ordering[T]): Range[T] = {
@@ -26,6 +28,7 @@ object Range {
     override def intersect(other: Range[T]) = this
     override def union(other: Range[T]) = Some(other)
     override def toString = "(empty range)"
+    override def toConditionString(variable: String): String = s"contradiction[$variable]"
   }
 
   object Singleton {
@@ -86,6 +89,21 @@ object Range {
       case Inclusive(b) => value <= b
       case Exclusive(b) => value < b
       case Infinite => true
+    }
+
+    override def toConditionString(variable: String): String = (lowerBound, upperBound) match {
+      case (Infinite, Infinite) => s"tautology[$variable]"
+
+      case (Infinite, Exclusive(b)) => s"$variable < $b"
+      case (Infinite, Inclusive(b)) => s"$variable <= $b"
+
+      case (Exclusive(a), Infinite) => s"$variable > $a"
+      case (Inclusive(a), Infinite) => s"$variable >= $a"
+
+      case (f1@Finite(a), f2@Finite(b)) =>
+        val left = if(f1.isExclusive) "<" else "<="
+        val right = if(f2.isExclusive) "<" else "<="
+        s"$a $left $variable $right $b"
     }
 
     override def toString: String = {
