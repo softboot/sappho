@@ -7,6 +7,7 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
   override def conditionFor(criterion: Criterion): Option[Condition] = conditionMap.get(criterion)
 
   override def and(other: Query): Query = other match {
+    case True => this
     case clause: Clause => this and clause
     case _ => ???
   }

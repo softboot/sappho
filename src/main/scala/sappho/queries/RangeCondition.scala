@@ -12,6 +12,12 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     comparedValue.exists(range.contains)
   }
 
+  override def and(other: Query): Query = other match {
+    case True => this
+    case clause: Clause => this and clause
+    case _ => ???
+  }
+
   override def and(clause: Clause): Clause = clause match {
     case False => False
     case anAnd: And => anAnd.and(this)
@@ -21,11 +27,6 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
         case newRange => new RangeCondition[T](this.criterion, this.extractor, newRange)
       }
     case different: Condition => And(this, different)
-  }
-
-  override def and(other: Query): Query = other match {
-    case clause: Clause => this and clause
-    case _ => ???
   }
 
   override def toString(): String = range.toConditionString(criterion.name)
