@@ -1,5 +1,3 @@
 package sappho.queries
 
-class Criterion(name: String) {
-  override def toString = s"Criterion($name)"
-}
+case class Criterion(name: String)
