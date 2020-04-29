@@ -2,7 +2,7 @@ package sappho.ao3.queries.range
 
 import org.scalatest.OneInstancePerTest
 import org.scalatest.funspec.AnyFunSpec
-import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range};
+import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range}
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   describe("Infinite range of integers") {
@@ -248,7 +248,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val unbounded: Range[Int] = Range[Int](Infinite, Infinite)
 
     it("should have a union equal to the unbounded range") {
-      assertResult(unbounded)(unbounded union unbounded)
+      assertResult(Some(unbounded))(unbounded union unbounded)
     }
     it("should have an intersection equal to the finite range") {
       assertResult(unbounded)(unbounded intersect unbounded)
@@ -259,7 +259,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val singleton: Range[Int] = Range.Singleton(5)
 
     it("should have a union equal to the unbounded range") {
-      assertResult(unbounded)(unbounded union singleton)
+      assertResult(Some(unbounded))(unbounded union singleton)
     }
     it("should have an intersection equal to the singleton range") {
       assertResult(singleton)(unbounded intersect singleton)
@@ -270,7 +270,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val finite: Range[Int] = Range(Inclusive(2), Exclusive(3))
 
     it("should have a union equal to the unbounded range") {
-      assertResult(unbounded)(unbounded union finite)
+      assertResult(Some(unbounded))(unbounded union finite)
     }
     it("should have an intersection equal to the finite range") {
       assertResult(finite)(unbounded intersect finite)
@@ -281,7 +281,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val infinite: Range[Int] = Range(Infinite, Inclusive(4))
 
     it("should have a union equal to the unbounded range") {
-      assertResult(unbounded)(unbounded union infinite)
+      assertResult(Some(unbounded))(unbounded union infinite)
     }
     it("should have an intersection equal to the infinite range") {
       assertResult(infinite)(unbounded intersect infinite)
@@ -292,7 +292,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val infinite: Range[Int] = Range(Exclusive(3), Infinite)
 
     it("should have a union equal to the unbounded range") {
-      assertResult(unbounded)(unbounded union infinite)
+      assertResult(Some(unbounded))(unbounded union infinite)
     }
     it("should have an intersection equal to the infinite range") {
       assertResult(infinite)(unbounded intersect infinite)
@@ -303,10 +303,10 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val second: Range[Int] = Range(Exclusive(5), Inclusive(14))
 
     it("should not have a continuous union") {
-      assertResult(Range.Empty[Int])(first union second)
+      assertResult(None)(first union second)
     }
     it("should not intersect") {
-      assertResult(Range.Empty[Int])(first intersect second)
+      assertResult(Range.Empty[Int]())(first intersect second)
     }
   }
   describe("The finite range [-3;9) and the finite range [7;13]") {
@@ -314,7 +314,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val second: Range[Int] = Range(Inclusive(7), Inclusive(13))
 
     it("should have a continuous union equal to [-3;13]") {
-      assertResult(Range(Inclusive(-3), Inclusive(13)))(first union second)
+      assertResult(Some(Range(Inclusive(-3), Inclusive(13))))(first union second)
     }
     it("should have a non-empty intersection equal to [7;9)") {
       assertResult(Range(Inclusive(7), Exclusive(9)))(first intersect second)
@@ -325,7 +325,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val second: Range[Int] = Range(Inclusive(10), Inclusive(20))
 
     it("should have a continuous union equal to (1;20]") {
-      assertResult(Range(Exclusive(1), Inclusive(20)))(first union second)
+      assertResult(Some(Range(Exclusive(1), Inclusive(20))))(first union second)
     }
     it("should have a one-element intersection") {
       assertResult(Range.Singleton(10))(first intersect second)
@@ -336,7 +336,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val second: Range[Int] = Range(Inclusive(9), Inclusive(13))
 
     it("should have a continuous union equal to (-Inf;13]") {
-      assertResult(Range(Infinite, Inclusive(13)))(first union second)
+      assertResult(Some(Range(Infinite, Inclusive(13))))(first union second)
     }
     it("should have an empty intersection") {
       assertResult(Range.Empty[Int]())(first intersect second)
@@ -347,7 +347,7 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     val second: Range[Int] = Range(Inclusive(10), Exclusive(12))
 
     it("should have a continuous union equal to (-Inf;12)") {
-      assertResult(Range(Infinite, Exclusive(12)))(first union second)
+      assertResult(Some(Range(Infinite, Exclusive(12))))(first union second)
     }
     it("should have a one-element intersection") {
       assertResult(Range.Singleton(10))(first intersect second)

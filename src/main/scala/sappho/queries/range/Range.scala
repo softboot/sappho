@@ -5,7 +5,7 @@ sealed trait Range[T] {
   def isSingleton: Boolean
   def contains(value: T): Boolean
   def intersect(other: Range[T]): Range[T]
-  def union(other: Range[T]): Range[T]
+  def union(other: Range[T]): Option[Range[T]]
 }
 object Range {
   def apply[T](lowerBound: Bound[T], upperBound: Bound[T])(implicit ordering: Ordering[T]): Range[T] = {
@@ -24,7 +24,7 @@ object Range {
     override def isSingleton: Boolean = false
     override def contains(value: T) = false
     override def intersect(other: Range[T]) = this
-    override def union(other: Range[T]) = other
+    override def union(other: Range[T]) = Some(other)
     override def toString = "(empty range)"
   }
 
@@ -61,19 +61,19 @@ object Range {
       Range(lower, upper)
     }
 
-    override def union(other: Range[T]): Range[T] = other match {
-      case Empty() => this
+    override def union(other: Range[T]): Option[Range[T]] = other match {
+      case Empty() => Some(this)
       case _ => union(other.asInstanceOf[NotEmpty[T]])
     }
 
-    def union(other: NotEmpty[T]): Range[T] = {
+    def union(other: NotEmpty[T]): Option[Range[T]] = {
       val (lowerTight, lowerLoose) = Bound.pickTightLoose(this.lowerBound, other.lowerBound)
       val (upperTight, upperLoose) = Bound.pickTightLoose(this.upperBound, other.upperBound)(ordering.reverse)
 
       if(Bound.isUnionCoherent(lowerTight, upperTight))
-        Range(lowerLoose, upperLoose)
+        Some(Range(lowerLoose, upperLoose))
       else
-        Empty()
+        None
     }
 
     private def fitsLeft(value: T): Boolean = lowerBound match {
