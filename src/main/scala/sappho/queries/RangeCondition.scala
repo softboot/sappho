@@ -1,7 +1,8 @@
 package sappho.queries
 
 import sappho.Story
-import sappho.queries.range.Range;
+import sappho.queries.range.Range
+import sappho.queries.range.Range.Empty;
 
 class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Option[T], val range: Range[T])
   extends Condition
@@ -10,6 +11,24 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     val comparedValue = extractor(story)
     comparedValue.exists(range.contains)
   }
+
+  override def and(clause: Clause): Clause = clause match {
+    case False => False
+    case anAnd: And => anAnd.and(this)
+    case similar: RangeCondition[T] if similar.criterion == this.criterion =>
+      this.range intersect similar.range match {
+        case Empty() => False
+        case newRange => new RangeCondition[T](this.criterion, this.extractor, newRange)
+      }
+    case different: Condition => And(this, different)
+  }
+
+  override def and(other: Query): Query = other match {
+    case clause: Clause => this and clause
+    case _ => ???
+  }
+
+  override def toString(): String = s"${criterion.name} in range $range"
 }
 
 object RangeCondition {
