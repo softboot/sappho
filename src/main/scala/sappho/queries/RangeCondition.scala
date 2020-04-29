@@ -35,8 +35,11 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
 }
 
 object RangeCondition {
-  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): RangeCondition[T] = {
-    new RangeCondition[T](criterion, extractor, range)
+  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Clause = {
+    if(range.isEmpty)
+      False
+    else
+      new RangeCondition[T](criterion, extractor, range)
   }
 
   val WordCount = RangeCondition[Int](Criterion("wordCount"), story => Some(story.wordCount)) _

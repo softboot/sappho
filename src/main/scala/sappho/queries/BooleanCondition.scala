@@ -3,7 +3,7 @@ package sappho.queries
 import sappho.Story
 import sappho.queries.BooleanFilter._
 
-class BooleanCondition private(val criterion: Criterion, predicate: Story => Boolean, val filter: BooleanFilter = Set)
+class BooleanCondition private(val criterion: Criterion, predicate: Story => Boolean, val filter: BooleanFilter)
   extends Condition
 {
   override def apply(story: Story): Boolean = filter.satisfiedBy(predicate(story))
@@ -37,10 +37,13 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
 }
 
 object BooleanCondition {
-  def apply(criterion: Criterion, predicate: Story => Boolean): BooleanCondition = {
-    new BooleanCondition(criterion, predicate)
+  def apply(criterion: Criterion, predicate: Story => Boolean)(filter: BooleanFilter = Set): Clause = {
+    filter match {
+      case Neither => False
+      case _ => new BooleanCondition(criterion, predicate, filter)
+    }
   }
 
-  val Complete = BooleanCondition(Criterion("complete"), _.isComplete)
-  val OneShot = BooleanCondition(Criterion("oneShot"), _.isOneShot)
+  val Complete = BooleanCondition(Criterion("complete"), _.isComplete)()
+  val OneShot = BooleanCondition(Criterion("oneShot"), _.isOneShot)()
 }

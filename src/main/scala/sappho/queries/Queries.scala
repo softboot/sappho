@@ -5,20 +5,6 @@ import java.time.LocalDate
 import sappho.queries.range.{Exclusive, FiniteRangeBuilder, Inclusive, RangeBuilder}
 
 object Queries {
-  val wordCount = RangeBuilder[Int, RangeCondition[Int]](RangeCondition.WordCount)
-  val score = RangeBuilder[Int, RangeCondition[Int]](RangeCondition.Score)
-  val views = RangeBuilder[Int, RangeCondition[Int]](RangeCondition.Views)
-
-  val chapterCount = RangeBuilder[Int, RangeCondition[Int]](RangeCondition.ChapterCount)
-  val plannedChapterCount = RangeBuilder[Int, RangeCondition[Int]](RangeCondition.PlannedChapterCount)
-
-  val isComplete = BooleanCondition.Complete
-  val isOneShot = BooleanCondition.OneShot
-
-  val publishedOn = RangeBuilder[LocalDate, RangeCondition[LocalDate]](RangeCondition.PublishedOn)
-  val updatedOn = RangeBuilder[LocalDate, RangeCondition[LocalDate]](RangeCondition.UpdatedOn)
-
-
   abstract class LHS[T] {
     def leftLimit: T
 
@@ -43,4 +29,18 @@ object Queries {
     override def <[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<(rangeBuilder)
     override def <=[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<=(rangeBuilder)
   }
+
+
+  val wordCount = RangeBuilder[Int, Clause](RangeCondition.WordCount)
+  val score = RangeBuilder[Int, Clause](RangeCondition.Score)
+  val views = RangeBuilder[Int, Clause](RangeCondition.Views)
+
+  val chapterCount = RangeBuilder[Int, Clause](RangeCondition.ChapterCount)
+  val plannedChapterCount = RangeBuilder[Int, Clause](RangeCondition.PlannedChapterCount)
+
+  val isComplete = BooleanCondition.Complete
+  val isOneShot = BooleanCondition.OneShot
+
+  val publishedOn = RangeBuilder[LocalDate, Clause](RangeCondition.PublishedOn)
+  val updatedOn = RangeBuilder[LocalDate, Clause](RangeCondition.UpdatedOn)
 }
