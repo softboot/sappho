@@ -38,7 +38,7 @@ object Bound {
         if(cmp == 0)
           !lowerTight.isExclusive || !upperTight.isExclusive
         else
-          cmp > 0
+          cmp < 0
       case _ => true
     }
   }

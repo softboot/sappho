@@ -2,7 +2,6 @@ package sappho.ao3.queries.range
 
 import org.scalatest.OneInstancePerTest
 import org.scalatest.funspec.AnyFunSpec
-import sappho.queries.range.Range.Empty
 import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range};
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
@@ -210,38 +209,38 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   }
   describe("The empty range (3;3]") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Exclusive(3), Inclusive(3)))
+      assertResult(Range.Empty[Int]())(Range(Exclusive(3), Inclusive(3)))
     }
   }
   describe("The empty range [3;3)") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Inclusive(3), Exclusive(3)))
+      assertResult(Range.Empty[Int]())(Range(Inclusive(3), Exclusive(3)))
     }
   }
   describe("The empty range (3;3)") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Exclusive(3), Exclusive(3)))
+      assertResult(Range.Empty[Int]())(Range(Exclusive(3), Exclusive(3)))
     }
   }
 
   describe("The invalid range (5;2)") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Exclusive(5), Exclusive(2)))
+      assertResult(Range.Empty[Int]())(Range(Exclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range [5;2)") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Inclusive(5), Exclusive(2)))
+      assertResult(Range.Empty[Int]())(Range(Inclusive(5), Exclusive(2)))
     }
   }
   describe("The invalid range (5;2]") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Exclusive(5), Inclusive(2)))
+      assertResult(Range.Empty[Int]())(Range(Exclusive(5), Inclusive(2)))
     }
   }
   describe("The invalid range [5;2]") {
     it("should not exist") {
-      assertResult(Empty[Int]())(Range(Inclusive(5), Inclusive(2)))
+      assertResult(Range.Empty[Int]())(Range(Inclusive(5), Inclusive(2)))
     }
   }
 
@@ -297,6 +296,61 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
     it("should have an intersection equal to the infinite range") {
       assertResult(infinite)(unbounded intersect infinite)
+    }
+  }
+  describe("The finite range (2;5) and the finite range (5;14]") {
+    val first: Range[Int] = Range(Exclusive(2), Exclusive(5))
+    val second: Range[Int] = Range(Exclusive(5), Inclusive(14))
+
+    it("should not have a continuous union") {
+      assertResult(Range.Empty[Int])(first union second)
+    }
+    it("should not intersect") {
+      assertResult(Range.Empty[Int])(first intersect second)
+    }
+  }
+  describe("The finite range [-3;9) and the finite range [7;13]") {
+    val first: Range[Int] = Range(Inclusive(-3), Exclusive(9))
+    val second: Range[Int] = Range(Inclusive(7), Inclusive(13))
+
+    it("should have a continuous union equal to [-3;13]") {
+      assertResult(Range(Inclusive(-3), Inclusive(13)))(first union second)
+    }
+    it("should have a non-empty intersection equal to [7;9)") {
+      assertResult(Range(Inclusive(7), Exclusive(9)))(first intersect second)
+    }
+  }
+  describe("The finite range (1;10] and the finite range [10;20]") {
+    val first: Range[Int] = Range(Exclusive(1), Inclusive(10))
+    val second: Range[Int] = Range(Inclusive(10), Inclusive(20))
+
+    it("should have a continuous union equal to (1;20]") {
+      assertResult(Range(Exclusive(1), Inclusive(20)))(first union second)
+    }
+    it("should have a one-element intersection") {
+      assertResult(Range.Singleton(10))(first intersect second)
+    }
+  }
+  describe("The infinite range (-Inf;9) and the finite range [9;13]") {
+    val first: Range[Int] = Range(Infinite, Exclusive(9))
+    val second: Range[Int] = Range(Inclusive(9), Inclusive(13))
+
+    it("should have a continuous union equal to (-Inf;13]") {
+      assertResult(Range(Infinite, Inclusive(13)))(first union second)
+    }
+    it("should have an empty intersection") {
+      assertResult(Range.Empty[Int]())(first intersect second)
+    }
+  }
+  describe("The infinite range (-Inf;10] and the finite range [10;12)") {
+    val first: Range[Int] = Range(Infinite, Inclusive(10))
+    val second: Range[Int] = Range(Inclusive(10), Exclusive(12))
+
+    it("should have a continuous union equal to (-Inf;12)") {
+      assertResult(Range(Infinite, Exclusive(12)))(first union second)
+    }
+    it("should have a one-element intersection") {
+      assertResult(Range.Singleton(10))(first intersect second)
     }
   }
 }
