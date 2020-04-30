@@ -15,19 +15,15 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
   }
 
   override def and(other: Query): Query = other match {
-    case True => this
     case clause: Clause => this and clause
-    case _ => ???
   }
 
   override def and(clause: Clause): Clause = clause match {
+    case True => this
     case False => False
     case anAnd: And => anAnd.and(this)
     case similar: RangeCondition[T] if similar.criterion == this.criterion =>
-      this.range intersect similar.range match {
-        case Empty() => False
-        case newRange => new RangeCondition[T](this.criterion, this.extractor, newRange)
-      }
+      RangeCondition(criterion, extractor)(this.range intersect similar.range)
     case different: Condition => And(this, different)
   }
 
@@ -35,7 +31,7 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
 }
 
 object RangeCondition {
-  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Query = {
+  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Clause = {
     range match {
       case Empty() => False
       case Range(Infinite, Infinite) => True

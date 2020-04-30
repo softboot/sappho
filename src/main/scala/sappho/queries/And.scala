@@ -7,12 +7,11 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
   override def conditionFor(criterion: Criterion): Option[Condition] = conditionMap.get(criterion)
 
   override def and(other: Query): Query = other match {
-    case True => this
     case clause: Clause => this and clause
-    case _ => ???
   }
 
   override def and(other: Clause): Clause = other match {
+    case True => this
     case False => False
     case anAnd: And => this andAllConditions anAnd
     case aCondition: Condition => this andCondition aCondition
@@ -25,6 +24,7 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
     if(conditionMap contains c.criterion) {
         conditionMap(c.criterion).and(c) match {
           case False => False
+          case True => new And(conditionMap - c.criterion)
           case newCondition: Condition => new And(conditionMap + (c.criterion -> newCondition))
         }
     }
