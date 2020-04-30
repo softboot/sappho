@@ -8,6 +8,7 @@ case object True extends Clause {
   override def conditionFor(criterion: Criterion) = None
   override def and(other: Query) = other
   override def and(other: Clause) = other
+  override def tryOr(other: Clause) = Some(True)
   override def toString() = "True"
 }
 

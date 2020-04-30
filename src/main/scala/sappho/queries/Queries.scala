@@ -31,17 +31,17 @@ object Queries {
   }
 
 
-  val wordCount = RangeBuilder[Int, Query](RangeCondition.WordCount)
-  val score = RangeBuilder[Int, Query](RangeCondition.Score)
-  val views = RangeBuilder[Int, Query](RangeCondition.Views)
+  val wordCount = RangeBuilder[Int, Clause](RangeCondition.WordCount)
+  val score = RangeBuilder[Int, Clause](RangeCondition.Score)
+  val views = RangeBuilder[Int, Clause](RangeCondition.Views)
 
-  val chapterCount = RangeBuilder[Int, Query](RangeCondition.ChapterCount)
-  val plannedChapterCount = RangeBuilder[Int, Query](RangeCondition.PlannedChapterCount)
+  val chapterCount = RangeBuilder[Int, Clause](RangeCondition.ChapterCount)
+  val plannedChapterCount = RangeBuilder[Int, Clause](RangeCondition.PlannedChapterCount)
 
   val isComplete = BooleanCondition.Complete
   val isOneShot = BooleanCondition.OneShot
 
-  val publishedOn = RangeBuilder[LocalDate, Query](RangeCondition.PublishedOn)
-  val updatedOn = RangeBuilder[LocalDate, Query](RangeCondition.UpdatedOn)
+  val publishedOn = RangeBuilder[LocalDate, Clause](RangeCondition.PublishedOn)
+  val updatedOn = RangeBuilder[LocalDate, Clause](RangeCondition.UpdatedOn)
   val completedOn = RangeBuilder[LocalDate, Query](range => isComplete && (updatedOn inRange range))
 }

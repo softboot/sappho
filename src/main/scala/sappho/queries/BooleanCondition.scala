@@ -21,6 +21,13 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
     case different: Condition => And(this, different)
   }
 
+  override def tryOr(other: Clause): Option[Clause] = other match {
+    case True | False | And(_) => other.tryOr(this)
+    case similar: BooleanCondition if similar.criterion == this.criterion =>
+      Some(BooleanCondition(criterion, predicate)(this.filter or similar.filter))
+    case _: Condition => None
+  }
+
   override def toString(): String = {
     filter match {
       case Set => criterion.name
@@ -28,6 +35,15 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
       case Either => "tautology[" + criterion.name + "]"
       case Neither => "contradiction[" + criterion.name + "]"
     }
+  }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: BooleanCondition => this.criterion == that.criterion && this.filter == that.filter
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    31 * criterion.hashCode + filter.hashCode
   }
 }
 

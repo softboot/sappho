@@ -27,7 +27,24 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     case different: Condition => And(this, different)
   }
 
+  override def tryOr(other: Clause): Option[Clause] = other match {
+    case True | False | And(_) => other.tryOr(this)
+    case similar: RangeCondition[T] if similar.criterion == this.criterion =>
+      (this.range union similar.range)
+          .map(newRange => RangeCondition(criterion, extractor)(newRange))
+    case _: Condition => None
+  }
+
   override def toString(): String = range.toConditionString(criterion.name)
+
+  override def equals(other: Any): Boolean = other match {
+    case that: RangeCondition[T] => this.criterion == that.criterion && this.range == that.range
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    31 * criterion.hashCode + range.hashCode
+  }
 }
 
 object RangeCondition {
