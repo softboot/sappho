@@ -12,4 +12,5 @@ trait Query extends (Story => Boolean) {
   def or(other: Query): Query
 
   final def &&(other: Query) = this and other
+  final def ||(other: Query) = this or other
 }
