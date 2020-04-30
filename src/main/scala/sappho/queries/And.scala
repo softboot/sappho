@@ -4,6 +4,8 @@ import sappho.Story
 class And private(private val conditionMap: Map[Criterion, Condition]) extends Clause {
   override def apply(story: Story): Boolean = conditionMap.values.forall(_(story))
 
+  override def criteria: Set[Criterion] = conditionMap.keySet
+
   override def conditionFor(criterion: Criterion): Option[Condition] = conditionMap.get(criterion)
 
   override def and(other: Query): Query = other match {
