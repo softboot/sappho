@@ -9,5 +9,7 @@ trait Query extends (Story => Boolean) {
 
   def and(other: Query): Query
 
+  def or(other: Query): Query
+
   final def &&(other: Query) = this and other
 }
