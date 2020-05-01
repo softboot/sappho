@@ -4,7 +4,7 @@ import sappho.Story
 class Or(private val clauses: Set[Clause]) extends Query {
   override def apply(story: Story) = clauses.exists(_(story))
 
-  override def criteria: Set[Criterion] = clauses.map(_.criteria).fold(Set.empty)(_ ++ _)
+  override def criteria: Set[Criterion[Any]] = clauses.map(_.criteria).fold(Set.empty)(_ ++ _)
 
   override def and(other: Query): Query = other match {
     case True => this

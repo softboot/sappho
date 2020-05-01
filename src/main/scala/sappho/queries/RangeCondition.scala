@@ -6,11 +6,11 @@ import sappho.Story
 import sappho.queries.range.Range.Empty
 import sappho.queries.range.{Infinite, Range};
 
-class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Option[T], val range: Range[T])
+class RangeCondition[T] private(val criterion: Criterion[T], val range: Range[T])
   extends Condition
 {
   override def apply(story: Story): Boolean = {
-    val comparedValue = extractor(story)
+    val comparedValue = criterion(story)
     comparedValue.exists(range.contains)
   }
 
@@ -19,7 +19,7 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     case False => False
     case anAnd: And => anAnd.and(this)
     case similar: RangeCondition[T] if similar.criterion == this.criterion =>
-      RangeCondition(criterion, extractor)(this.range intersect similar.range)
+      RangeCondition(criterion)(this.range intersect similar.range)
     case different: Condition => And(this, different)
   }
 
@@ -27,12 +27,12 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     case True | False | And(_) => other.tryOr(this)
     case similar: RangeCondition[T] if similar.criterion == this.criterion =>
       (this.range union similar.range)
-          .map(newRange => RangeCondition(criterion, extractor)(newRange))
+          .map(newRange => RangeCondition(criterion)(newRange))
     case _: Condition => None
   }
 
   override def not(): Query = range.complement()
-    .map(RangeCondition(criterion, extractor)(_))
+    .map(RangeCondition(criterion)(_))
     .foldLeft(False.asInstanceOf[Query])(_ or _)
 
   override def normalized = range match {
@@ -54,21 +54,21 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
 }
 
 object RangeCondition {
-  def apply[T](criterion: Criterion, extractor: Story => Option[T])(range: Range[T]): Clause = {
+  def apply[T](criterion: Criterion[T])(range: Range[T]): Clause = {
     range match {
       case Empty() => False
       case Range(Infinite, Infinite) => True
-      case _ => new RangeCondition[T](criterion, extractor, range)
+      case _ => new RangeCondition[T](criterion, range)
     }
   }
 
-  val WordCount = RangeCondition[Int](Criterion("wordCount"), story => Some(story.wordCount)) _
-  val Score = RangeCondition[Int](Criterion("score"), story => Some(story.score)) _
-  val Views = RangeCondition[Int](Criterion("views"), story => Some(story.views)) _
+  val WordCount = RangeCondition[Int](Criteria.WordCount) _
+  val Score = RangeCondition[Int](Criteria.Score) _
+  val Views = RangeCondition[Int](Criteria.Views) _
 
-  val ChapterCount = RangeCondition[Int](Criterion("chapterCount"), story => Some(story.chapters.length)) _
-  val PlannedChapterCount = RangeCondition[Int](Criterion("plannedChapterCount"), story => story.chapters.plannedCount) _
+  val ChapterCount = RangeCondition[Int](Criteria.ChapterCount) _
+  val PlannedChapterCount = RangeCondition[Int](Criteria.PlannedChapterCount) _
 
-  val PublishedOn = RangeCondition[LocalDate](Criterion("publishedOn"), story => Some(story.publishedOn)) _
-  val UpdatedOn = RangeCondition[LocalDate](Criterion("updatedOn"), story => Some(story.updatedOn)) _
+  val PublishedOn = RangeCondition[LocalDate](Criteria.PublishedOn) _
+  val UpdatedOn = RangeCondition[LocalDate](Criteria.UpdatedOn) _
 }

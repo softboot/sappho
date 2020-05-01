@@ -5,7 +5,7 @@ import sappho.Story
 trait Query extends (Story => Boolean) {
   override def apply(story: Story): Boolean
 
-  def criteria: Set[Criterion]
+  def criteria: Set[Criterion[Any]]
 
   def and(other: Query): Query
 

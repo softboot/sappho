@@ -3,28 +3,28 @@ package sappho.queries
 import sappho.Story
 import sappho.queries.BooleanFilter._
 
-class BooleanCondition private(val criterion: Criterion, predicate: Story => Option[Boolean], val filter: BooleanFilter)
+class BooleanCondition private(val criterion: Criterion[Boolean], val filter: BooleanFilter)
   extends Condition
 {
-  override def apply(story: Story): Boolean = filter.satisfiedByOption(predicate(story))
+  override def apply(story: Story): Boolean = filter.satisfiedByOption(criterion(story))
 
   override def and(other: Clause): Clause = other match {
     case True => this
     case False => False
     case anAnd: And => anAnd.and(this)
     case similar: BooleanCondition if similar.criterion == this.criterion =>
-      BooleanCondition(criterion, predicate)(this.filter and similar.filter)
+      BooleanCondition(criterion)(this.filter and similar.filter)
     case different: Condition => And(this, different)
   }
 
   override def tryOr(other: Clause): Option[Clause] = other match {
     case True | False | And(_) => other.tryOr(this)
     case similar: BooleanCondition if similar.criterion == this.criterion =>
-      Some(BooleanCondition(criterion, predicate)(this.filter or similar.filter))
+      Some(BooleanCondition(criterion)(this.filter or similar.filter))
     case _: Condition => None
   }
 
-  override def not(): Query = BooleanCondition(criterion, predicate)(filter.not())
+  override def not(): Query = BooleanCondition(criterion)(filter.not())
 
   override def normalized = filter match {
     case Neither => False
@@ -52,14 +52,14 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Opt
 }
 
 object BooleanCondition {
-  def apply(criterion: Criterion, predicate: Story => Option[Boolean])(filter: BooleanFilter = Set): Clause = {
+  def apply(criterion: Criterion[Boolean])(filter: BooleanFilter = Set): Clause = {
     filter match {
       case Neither => False
       case Either => True
-      case _ => new BooleanCondition(criterion, predicate, filter)
+      case _ => new BooleanCondition(criterion, filter)
     }
   }
 
-  val Complete = BooleanCondition(Criterion("complete"), story => Some(story.isComplete))()
-  val OneShot = BooleanCondition(Criterion("oneShot"), story => Some(story.isOneShot))()
+  val Complete = BooleanCondition(Criteria.Complete)()
+  val OneShot = BooleanCondition(Criteria.OneShot)()
 }

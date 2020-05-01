@@ -1,11 +1,11 @@
 package sappho.queries
 
 trait Condition extends Clause {
-  def criterion: Criterion
+  def criterion: Criterion[Any]
 
-  override final def criteria: Set[Criterion] = Set(criterion)
+  override final def criteria: Set[Criterion[Any]] = Set(criterion)
 
-  override def conditionFor(criterion: Criterion): Option[Condition] = {
+  override def conditionFor(criterion: Criterion[Any]): Option[Condition] = {
     if(criterion == this.criterion)
       Some(this)
     else

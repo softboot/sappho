@@ -1,7 +1,7 @@
 package sappho.queries
 
 trait Clause extends Query {
-  def conditionFor(criterion: Criterion): Option[Condition]
+  def conditionFor(criterion: Criterion[Any]): Option[Condition]
 
   override def and(other: Query): Query = other match {
     case clause: Clause => this and clause
