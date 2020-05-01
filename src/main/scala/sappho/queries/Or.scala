@@ -46,7 +46,7 @@ class Or(private val clauses: Set[Clause]) extends Query {
 }
 object Or {
   def apply(clauses: Clause*): Query = clauses
-    .foldLeft(new Or(Set.empty).asInstanceOf[Query])(_ and _)
+    .foldLeft(new Or(Set.empty).asInstanceOf[Query])(_ or _)
 
   def unapply(or: Or): Option[Iterable[Clause]] = Some(or.clauses)
 }
