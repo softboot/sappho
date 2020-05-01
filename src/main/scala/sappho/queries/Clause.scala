@@ -17,5 +17,5 @@ trait Clause extends Query {
     case _: Or => other or this
   }
 
-  def normalized: Clause
+  override def normalized: Clause
 }

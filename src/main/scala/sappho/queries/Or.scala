@@ -12,6 +12,7 @@ class Or(private val clauses: Set[Clause]) extends Query {
     case _ => clauses.iterator
       .map(_ and other)
       .foldLeft(new Or(Set.empty).asInstanceOf[Query])(_ or _)
+      .normalized
   }
 
   override def or(other: Query): Query = other match {
@@ -35,6 +36,12 @@ class Or(private val clauses: Set[Clause]) extends Query {
     .map(_.not())
     .foldLeft(True.asInstanceOf[Query])(_ and _)
 
+  override def normalized: Query = clauses.size match {
+    case 0 => True
+    case 1 => clauses.head
+    case _ => this
+  }
+
   override def toString(): String = clauses.mkString(" || ")
 
   override def equals(other: Any): Boolean = other match {
@@ -47,6 +54,7 @@ class Or(private val clauses: Set[Clause]) extends Query {
 object Or {
   def apply(clauses: Clause*): Query = clauses
     .foldLeft(new Or(Set.empty).asInstanceOf[Query])(_ or _)
+    .normalized
 
   def unapply(or: Or): Option[Iterable[Clause]] = Some(or.clauses)
 }
