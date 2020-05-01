@@ -14,10 +14,6 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     comparedValue.exists(range.contains)
   }
 
-  override def and(other: Query): Query = other match {
-    case clause: Clause => this and clause
-  }
-
   override def and(clause: Clause): Clause = clause match {
     case True => this
     case False => False
@@ -34,6 +30,10 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
           .map(newRange => RangeCondition(criterion, extractor)(newRange))
     case _: Condition => None
   }
+
+  override def not(): Query = range.complement()
+    .map(RangeCondition(criterion, extractor)(_))
+    .foldLeft(False.asInstanceOf[Query])(_ or _)
 
   override def toString(): String = range.toConditionString(criterion.name)
 

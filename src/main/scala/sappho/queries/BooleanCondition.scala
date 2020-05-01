@@ -8,10 +8,6 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
 {
   override def apply(story: Story): Boolean = filter.satisfiedBy(predicate(story))
 
-  override def and(other: Query): Query = other match {
-    case clause: Clause => this and clause
-  }
-
   override def and(other: Clause): Clause = other match {
     case True => this
     case False => False
@@ -27,6 +23,8 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
       Some(BooleanCondition(criterion, predicate)(this.filter or similar.filter))
     case _: Condition => None
   }
+
+  override def not(): Query = BooleanCondition(criterion, predicate)(filter.not())
 
   override def toString(): String = {
     filter match {

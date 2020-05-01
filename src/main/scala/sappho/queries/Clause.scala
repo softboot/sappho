@@ -3,6 +3,11 @@ package sappho.queries
 trait Clause extends Query {
   def conditionFor(criterion: Criterion): Option[Condition]
 
+  override def and(other: Query): Query = other match {
+    case clause: Clause => this and clause
+    case _: Or => other and this
+  }
+
   def and(other: Clause): Clause
 
   def tryOr(other: Clause): Option[Clause]

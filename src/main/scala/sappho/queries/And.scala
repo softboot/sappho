@@ -8,10 +8,6 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
 
   override def conditionFor(criterion: Criterion): Option[Condition] = conditionMap.get(criterion)
 
-  override def and(other: Query): Query = other match {
-    case clause: Clause => this and clause
-  }
-
   override def and(other: Clause): Clause = other match {
     case True => this
     case False => False
@@ -58,6 +54,10 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
       else if(rightUnique.isEmpty) Some(that)
       else None
   }
+
+  override def not(): Query = conditionMap.values
+    .map(_.not())
+    .foldLeft(False.asInstanceOf[Query])(_ or _)
 
   override def toString(): String = conditionMap.values.mkString("(", " && ", ")")
 

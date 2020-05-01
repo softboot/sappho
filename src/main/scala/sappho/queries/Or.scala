@@ -27,7 +27,13 @@ class Or(private val clauses: Set[Clause]) extends Query {
         }
       )
       new Or(resultSet + lastElement)
+    case another: Or => another.clauses
+      .foldLeft(this.asInstanceOf[Query])(_ or _)
   }
+
+  override def not(): Query = clauses.iterator
+    .map(_.not())
+    .foldLeft(True.asInstanceOf[Query])(_ and _)
 
   override def toString(): String = clauses.mkString(" || ")
 
