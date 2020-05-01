@@ -4,6 +4,7 @@ sealed abstract class BooleanFilter {
   def satisfiedBy(boolean: => Boolean): Boolean
   def and(other: BooleanFilter): BooleanFilter
   def or(other: BooleanFilter): BooleanFilter
+  def not(): BooleanFilter
 }
 object BooleanFilter {
   case object Set extends BooleanFilter {
@@ -18,6 +19,8 @@ object BooleanFilter {
       case Unset | Either => Either
       case _ => Set
     }
+
+    override def not() = Unset
 
     override def toString = "Set"
   }
@@ -35,6 +38,8 @@ object BooleanFilter {
       case _ => Unset
     }
 
+    override def not() = Set
+
     override def toString = "Unset"
   }
 
@@ -45,6 +50,8 @@ object BooleanFilter {
 
     override def or(other: BooleanFilter) = Either
 
+    override def not() = Neither
+
     override def toString = "Either"
   }
 
@@ -54,6 +61,8 @@ object BooleanFilter {
     override def and(other: BooleanFilter) = Neither
 
     override def or(other: BooleanFilter) = other
+
+    override def not() = Either
 
     override def toString = "Neither"
   }
