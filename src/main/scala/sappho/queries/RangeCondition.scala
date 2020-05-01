@@ -35,6 +35,12 @@ class RangeCondition[T] private(val criterion: Criterion, extractor: Story => Op
     .map(RangeCondition(criterion, extractor)(_))
     .foldLeft(False.asInstanceOf[Query])(_ or _)
 
+  override def normalized = range match {
+    case Empty() => False
+    case Range(Infinite, Infinite) => True
+    case _ => this
+  }
+
   override def toString(): String = range.toConditionString(criterion.name)
 
   override def equals(other: Any): Boolean = other match {

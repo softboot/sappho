@@ -22,7 +22,7 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
     if(conditionMap contains c.criterion) {
         conditionMap(c.criterion).and(c) match {
           case False => False
-          case True => new And(conditionMap - c.criterion)
+          case True => new And(conditionMap - c.criterion).normalized
           case newCondition: Condition => new And(conditionMap + (c.criterion -> newCondition))
         }
     }
@@ -46,7 +46,7 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
 
         (leftUnique.head tryOr rightUnique.head).map(_ match {
           case False => False
-          case True => new And(conditionMap - commonCriterion)
+          case True => new And(conditionMap - commonCriterion).normalized
           case newCondition: Condition => new And(conditionMap + (commonCriterion -> newCondition))
         })
       }
@@ -58,6 +58,12 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
   override def not(): Query = conditionMap.values
     .map(_.not())
     .foldLeft(False.asInstanceOf[Query])(_ or _)
+
+  override def normalized: Clause = conditionMap.size match {
+    case 0 => False
+    case 1 => conditionMap.values.head
+    case _ => this
+  }
 
   override def toString(): String = conditionMap.values.mkString("(", " && ", ")")
 
@@ -71,6 +77,7 @@ class And private(private val conditionMap: Map[Criterion, Condition]) extends C
 object And {
   def apply(conditions: Condition*): Clause = conditions
     .foldLeft(new And(Map.empty).asInstanceOf[Clause])(_ and _)
+    .normalized
 
   def unapply(and: And): Option[Iterable[Condition]] = Some(and.conditionMap.values)
 }

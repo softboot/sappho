@@ -16,4 +16,6 @@ trait Clause extends Query {
     case clause: Clause => (this tryOr clause).getOrElse(new Or(Set(this, clause)))
     case _: Or => other or this
   }
+
+  def normalized: Clause
 }

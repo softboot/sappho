@@ -11,6 +11,7 @@ case object True extends Clause {
   override def tryOr(other: Clause) = Some(True)
   override def or(other: Query) = True
   override def not() = False
+  override def normalized = this
   override def toString() = "True"
 }
 

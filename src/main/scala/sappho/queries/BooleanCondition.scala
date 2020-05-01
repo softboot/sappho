@@ -26,6 +26,12 @@ class BooleanCondition private(val criterion: Criterion, predicate: Story => Boo
 
   override def not(): Query = BooleanCondition(criterion, predicate)(filter.not())
 
+  override def normalized = filter match {
+    case Neither => False
+    case Either => True
+    case _ => this
+  }
+
   override def toString(): String = {
     filter match {
       case Set => criterion.name
