@@ -6,6 +6,7 @@ sealed trait Range[T] {
   def contains(value: T): Boolean
   def intersect(other: Range[T]): Range[T]
   def union(other: Range[T]): Option[Range[T]]
+  def complement(): Seq[Range[T]]
   
   def toConditionString(variable: String): String
 }
@@ -21,12 +22,13 @@ object Range {
     Some((range.lowerBound, range.upperBound))
   }
 
-  final case class Empty[T]() extends Range[T] {
+  final case class Empty[T]()(implicit ordering: Ordering[T]) extends Range[T] {
     override def isEmpty: Boolean = true
     override def isSingleton: Boolean = false
     override def contains(value: T) = false
     override def intersect(other: Range[T]) = this
     override def union(other: Range[T]) = Some(other)
+    override def complement(): Seq[Range[T]] = Seq(Range[T](Infinite, Infinite))
     override def toString = "(empty range)"
     override def toConditionString(variable: String): String = s"contradiction[$variable]"
   }
@@ -77,6 +79,17 @@ object Range {
         Some(Range(lowerLoose, upperLoose))
       else
         None
+    }
+
+    override def complement(): Seq[Range[T]] = (lowerBound, upperBound) match {
+      case (Infinite, Infinite) => Seq()
+
+      case (Infinite, Inclusive(b)) => Seq(Range[T](Exclusive(b), Infinite))
+      case (Infinite, Exclusive(b)) => Seq(Range[T](Inclusive(b), Infinite))
+      case (Inclusive(a), Infinite) => Seq(Range[T](Infinite, Exclusive(a)))
+      case (Exclusive(a), Infinite) => Seq(Range[T](Infinite, Inclusive(a)))
+
+      case (f1, f2) => Range[T](f1, Infinite).complement() ++ Range[T](Infinite, f2).complement()
     }
 
     private def fitsLeft(value: T): Boolean = lowerBound match {
