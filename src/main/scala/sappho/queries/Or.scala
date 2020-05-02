@@ -19,14 +19,12 @@ class Or(private val clauses: Set[Clause]) extends Query {
     case True => True
     case False => this
     case singleClause: Clause =>
-      val (resultSet, lastElement) = clauses.foldLeft((Set.empty[Clause], singleClause))(
-        (acc: (Set[Clause], Clause), nextClause: Clause) => {
-          val (unrelatedClauses, newOne) = acc
+      val (resultSet, lastElement) = clauses.foldLeft((Set.empty[Clause], singleClause)){
+        case ((unrelatedClauses, newOne), nextClause) =>
           (nextClause tryOr newOne)
             .map(union => (unrelatedClauses, union))
             .getOrElse((unrelatedClauses + nextClause, newOne))
-        }
-      )
+      }
       new Or(resultSet + lastElement)
     case another: Or => another.clauses
       .foldLeft(this.asInstanceOf[Query])(_ or _)
