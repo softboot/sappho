@@ -21,6 +21,7 @@ class ResultPage(val url: URL, browser: Browser) extends Iterable[SearchResult] 
 
   private def loadResultFromLink(selector: String): Option[ResultPage] = (page >> elements(selector))
     .map(_ attr "href")
+    .map("https://archiveofourown.org" + _)
     .map(new URL(_))
     .map(new ResultPage(_, browser))
     .headOption
