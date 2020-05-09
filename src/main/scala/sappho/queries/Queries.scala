@@ -44,4 +44,13 @@ object Queries {
   val publishedOn = RangeBuilder[LocalDate, Clause](RangeCondition.PublishedOn)
   val updatedOn = RangeBuilder[LocalDate, Clause](RangeCondition.UpdatedOn)
   val completedOn = RangeBuilder[LocalDate, Query](range => isComplete && (updatedOn inRange range))
+
+  val ratings = TagCondition.Builder(Criteria.Ratings)
+  val warnings = TagCondition.Builder(Criteria.Warnings)
+  val categories = TagCondition.Builder(Criteria.Categories)
+  val genres = TagCondition.Builder(Criteria.Genres)
+  val fandoms = TagCondition.Builder(Criteria.Fandoms)
+  val characters = TagCondition.Builder(Criteria.Characters)
+  val relationships = TagCondition.Builder(Criteria.Relationships)
+  val freeformTags = TagCondition.Builder(Criteria.FreeformTags)
 }
