@@ -2,10 +2,12 @@ package sappho.ao3
 
 import java.time.LocalDate
 
+import com.typesafe.scalalogging.Logger
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
+import sappho.util.Log._
 
 private class PageChapter(
     val story: Story,
@@ -29,9 +31,11 @@ private class PageChapter(
 }
 
 private object PageChapter {
+  private val logger = Logger[PageChapter]
+
   def load(story: Story, chapterIndex: Int, browser: Browser, provider: ChapterInfoProvider): PageChapter = {
     val chapterId = provider.pollChapterId(chapterIndex)
-    val page = browser.get(Chapter.urlById(story.storyId, chapterId) + "?view_adult=true")
+    val page = browser.get(Chapter.urlById(story.storyId, chapterId) + "?view_adult=true", logger)
     new PageChapter(story, chapterIndex, chapterId, page, provider)
   }
 

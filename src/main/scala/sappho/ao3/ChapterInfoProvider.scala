@@ -3,10 +3,12 @@ package sappho.ao3
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import com.typesafe.scalalogging.StrictLogging
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
+import sappho.util.Log._
 
 private trait ChapterInfoProvider {
   def story: Story
@@ -35,10 +37,10 @@ private class DropdownListChapterInfoProvider(val story: Story, browser: Browser
   override def pollDate(chapterIndex: Int): LocalDate = navigationProvider.pollDate(chapterIndex)
 }
 
-private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider {
+private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider with StrictLogging {
   import NavigationChapterInfoProvider._
 
-  private val navigationPage = browser.get(story.url + "/navigate")
+  private val navigationPage = browser.get(story.url + "/navigate", logger)
   private val list = (navigationPage >> element("ol.chapter")).children.toIndexedSeq
 
   override def pollChapterId(chapterIndex: Int): Long = {

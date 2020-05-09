@@ -3,6 +3,7 @@ package sappho.ao3
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
+import com.typesafe.scalalogging.StrictLogging
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL.Parse._
@@ -11,9 +12,10 @@ import net.ruippeixotog.scalascraper.model._
 import sappho.ao3.Story._
 import sappho.ao3.tags.{Category, Character, Fandom, Freeform, Rating, Relationship, Warning}
 import sappho.tags.{Genre, Tag}
+import sappho.util.Log._
 
-private class PageStory(val storyId: Long, browser: Browser) extends Story {
-  private val page: Document = browser.get(urlByStoryId(storyId) + "?view_adult=true")
+private class PageStory(val storyId: Long, browser: Browser) extends Story with StrictLogging {
+  private val page: Document = browser.get(urlByStoryId(storyId) + "?view_adult=true", logger)
 
   override def title: String = page >> text("h2.title")
 
