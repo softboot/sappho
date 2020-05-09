@@ -8,7 +8,10 @@ sealed trait Range[T] {
   def intersect(other: Range[T]): Range[T]
   def union(other: Range[T]): Option[Range[T]]
   def complement(): Seq[Range[T]]
-  
+
+  def notEmpty: Range.NotEmpty[T]
+  def notEmptyOption: Option[Range.NotEmpty[T]]
+
   def toConditionString(variable: String): String
 }
 object Range {
@@ -31,6 +34,12 @@ object Range {
     override def intersect(other: Range[T]) = this
     override def union(other: Range[T]) = Some(other)
     override def complement(): Seq[Range[T]] = Seq(Range[T](Infinite, Infinite))
+
+    override def notEmpty: Range.NotEmpty[T] =
+      throw new UnsupportedOperationException("Empty range cannot be accessed as a non-empty range")
+
+    override def notEmptyOption: None.type = None
+
     override def toString = "(empty range)"
     override def toConditionString(variable: String): String = s"contradiction[$variable]"
   }
@@ -113,6 +122,10 @@ object Range {
       case Exclusive(b) => value < b
       case Infinite => true
     }
+
+    override def notEmpty: Range.NotEmpty[T] = this
+
+    override def notEmptyOption: Some[Range.NotEmpty[T]] = Some(this)
 
     override def toConditionString(variable: String): String = (lowerBound, upperBound) match {
       case (Infinite, Infinite) => s"tautology[$variable]"
