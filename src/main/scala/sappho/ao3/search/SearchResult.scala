@@ -70,5 +70,5 @@ class SearchResult(private[search] val li: Element, browser: Browser) extends St
 }
 
 object SearchResult {
-  val DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMMM uuuu", Locale.ENGLISH)
+  val DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM uuuu", Locale.ENGLISH)
 }
