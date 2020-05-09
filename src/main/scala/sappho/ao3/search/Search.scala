@@ -5,27 +5,64 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import net.ruippeixotog.scalascraper.browser.Browser
-import sappho.queries.BooleanFilter
-import sappho.queries.range.Range.NotEmpty
 import sappho.queries.range._
+import sappho.queries.{BooleanFilter, Order}
 import sappho.util.GetRequestBuilder
 
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 
 class Search {
   import Search._
+
+  def primaryTag: String = includedTags
+    .headOption
+    .getOrElse(throw new IllegalArgumentException("At least one included tag must be provided"))
   
-  var primaryTag: String = ""
-  val includedTags: mutable.Seq[String] = ArrayBuffer()
-  val excludedTags: mutable.Seq[String] = ArrayBuffer()
+  val includedTags: mutable.Set[String] = mutable.HashSet()
+  val excludedTags: mutable.Set[String] = mutable.HashSet()
 
-  var crossoverFilter: BooleanFilter = BooleanFilter.Either
-  var completeFilter: BooleanFilter = BooleanFilter.Either
-  var wordCountRange: NotEmpty[Int] = Range[Int](Infinite, Infinite).asInstanceOf[NotEmpty[Int]]
-  var revisionDateRange: NotEmpty[LocalDate] = Range[LocalDate](Infinite, Infinite).asInstanceOf[NotEmpty[LocalDate]]
+  private var ordering0: Order[Any] = Order.byDateOfUpdate
+  private var crossoverFilter0: BooleanFilter = BooleanFilter.Either
+  private var completeFilter0: BooleanFilter = BooleanFilter.Either
+  private var wordCountRange0: Range.NotEmpty[Int] = Range.Unbounded[Int]()
+  private var revisionDateRange0: Range.NotEmpty[LocalDate] = Range.Unbounded[LocalDate]()
 
-  var ordering: String = "revised_at"
+  def crossoverFilter = crossoverFilter0
+  def crossoverFilter_=(filter: BooleanFilter): Unit = {
+    if(filter == BooleanFilter.Neither)
+      throw new IllegalArgumentException("Self-contradictory query: crossover filter set to Neither")
+    crossoverFilter0 = filter
+  }
+
+  def completeFilter = completeFilter0
+  def completeFilter_=(filter: BooleanFilter): Unit = {
+    if(filter == BooleanFilter.Neither)
+      throw new IllegalArgumentException("Self-contradictory query: complete filter set to Neither")
+    completeFilter0 = filter
+  }
+
+  def wordCountRange: Range[Int] = wordCountRange0
+  def wordCountRange_=(range: Range[Int]): Unit = {
+    if(range.isEmpty)
+      throw new IllegalArgumentException("Self-contradictory query: empty word count range")
+    wordCountRange0 = range.notEmpty
+  }
+
+  def revisionDateRange: Range[LocalDate] = revisionDateRange0
+  def revisionDateRange_=(range: Range[LocalDate]): Unit = {
+    if(range.isEmpty)
+      throw new IllegalArgumentException("Self-contradictory query: empty word count range")
+    revisionDateRange0 = range.notEmpty
+  }
+
+  def ordering = ordering0
+  def ordering_=(order: Order[Any]): Unit = {
+    order match {
+      case Order.byDateOfUpdate => ordering0 = order
+      case _ => throw new IllegalArgumentException(s"${order} not supported by AO3")
+    }
+  }
+
   var languageId: String = ""
 
 
@@ -52,19 +89,21 @@ class Search {
     
     if(pageIndex > 0)
       builder.add("page", (pageIndex + 1).toString)
+
+    val primary = primaryTag
     
-    builder.add("work_search[sort_column]", ordering)
-      .add("work_search[other_tag_names]", includedTags.mkString(","))
+    builder.add("work_search[sort_column]", orderToString(ordering))
+      .add("work_search[other_tag_names]", (includedTags - primary).mkString(","))
       .add("work_search[excluded_tag_names]", excludedTags.mkString(","))
       .add("work_search[crossover]", filterToString(crossoverFilter))
       .add("work_search[complete]", filterToString(completeFilter))
-      .add("work_search[words_from]", leftIntBoundToString(wordCountRange.lowerBound))
-      .add("work_search[words_to]", rightIntBoundToString(wordCountRange.upperBound))
-      .add("work_search[date_from]", leftDateBoundToString(revisionDateRange.lowerBound))
-      .add("work_search[date_to]", rightDateBoundToString(revisionDateRange.upperBound))
+      .add("work_search[words_from]", leftIntBoundToString(wordCountRange0.lowerBound))
+      .add("work_search[words_to]", rightIntBoundToString(wordCountRange0.upperBound))
+      .add("work_search[date_from]", leftDateBoundToString(revisionDateRange0.lowerBound))
+      .add("work_search[date_to]", rightDateBoundToString(revisionDateRange0.upperBound))
       .addEmpty("work_search[query]")
       .add("work_search[language_id]", languageId)
-      .add("tag_id", primaryTag, x => x) //TODO properly encode the primary tag
+      .add("tag_id", primary, x => x) //TODO properly encode the primary tag
 
     new URL(builder.get)
   }
@@ -74,6 +113,13 @@ object Search {
   def baseUrl: URL = new URL("https://archiveofourown.org/works")
   
   private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+
+  private def orderToString(order: Order[Any]): String = order match {
+    case Order.byDateOfUpdate => "revised_at"
+    case _ =>
+      //Unsupported order should have been detected much sooner.
+      throw new IllegalStateException("Invalid order encountered")
+  }
 
   private def filterToString(filter: BooleanFilter): String = filter match {
     case BooleanFilter.Set => "T"
