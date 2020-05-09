@@ -3,6 +3,7 @@ package sappho
 import java.net.URL
 
 import net.ruippeixotog.scalascraper.browser.Browser
+import sappho.queries.{Order, Query}
 
 /** Represents a fanfiction archive.
  *
@@ -31,4 +32,11 @@ trait Archive {
 
   /** Fetches a story by its id. */
   def fetchStoryById(storyId: Long)(implicit browser: Browser): Story
+
+  /** Fetches stories matching a specified query.
+   *
+   *  This method executes a given query, returning a lazily-evaluated sequence of stories
+   *  fulfilling the required conditions, sorted in the defined order.
+   */
+  def search(query: Query, order: Order[Any])(implicit browser: Browser): IterableOnce[Story]
 }
