@@ -5,11 +5,14 @@ import org.scalatest.funspec.AnyFunSpec
 import sappho.queries.range.{Exclusive, Inclusive, Infinite, Range}
 
 class RangeSpec extends AnyFunSpec with OneInstancePerTest {
-  describe("Infinite range of integers") {
-    val range: Range[Int] = Range[Int](Infinite, Infinite)
+  describe("Unbounded range of integers") {
+    val range: Range[Int] = Range.Unbounded[Int]
 
     it("should contain any number") {
       assert(range contains 1)
+    }
+    it("should be unbounded") {
+      assert(range.isUnbounded)
     }
     it("should have the correct string representation") {
       assertResult("(-Inf;+Inf)")(range.toString)
@@ -27,6 +30,9 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
     it("should not contain 5") {
       assert(!(range contains 5))
+    }
+    it("should not be unbounded") {
+      assert(!range.isUnbounded)
     }
     it("should have the correct string representation") {
       assertResult("(-Inf;4]")(range.toString)
@@ -79,6 +85,9 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     it("should contain 5") {
       assert(range contains 5)
     }
+    it("should not be unbounded") {
+      assert(!range.isUnbounded)
+    }
     it("should have the correct string representation") {
       assertResult("(4;+Inf)")(range.toString)
     }
@@ -130,6 +139,9 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
     }
     it("should not contain 14") {
       assert(!(range contains 14))
+    }
+    it("should not be unbounded") {
+      assert(!range.isUnbounded)
     }
     it("should have the correct string representation") {
       assertResult("[2;13)")(range.toString)
@@ -241,6 +253,13 @@ class RangeSpec extends AnyFunSpec with OneInstancePerTest {
   describe("The invalid range [5;2]") {
     it("should not exist") {
       assertResult(Range.Empty[Int]())(Range(Inclusive(5), Inclusive(2)))
+    }
+  }
+
+  describe("The empty range") {
+    it("should not be unbounded") {
+      val range = Range.Empty[Int]()
+      assert(!range.isUnbounded)
     }
   }
 

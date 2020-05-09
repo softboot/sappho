@@ -3,6 +3,7 @@ package sappho.queries.range
 sealed trait Range[T] {
   def isEmpty: Boolean
   def isSingleton: Boolean
+  def isUnbounded: Boolean
   def contains(value: T): Boolean
   def intersect(other: Range[T]): Range[T]
   def union(other: Range[T]): Option[Range[T]]
@@ -25,6 +26,7 @@ object Range {
   final case class Empty[T]()(implicit ordering: Ordering[T]) extends Range[T] {
     override def isEmpty: Boolean = true
     override def isSingleton: Boolean = false
+    override def isUnbounded: Boolean = false
     override def contains(value: T) = false
     override def intersect(other: Range[T]) = this
     override def union(other: Range[T]) = Some(other)
@@ -46,12 +48,20 @@ object Range {
     }
   }
 
+  object Unbounded {
+    def apply[T]()(implicit ordering: Ordering[T]): Range.NotEmpty[T] = new NotEmpty[T](Infinite, Infinite)
+
+    def unapply[T](range: NotEmpty[T]): Boolean = range.isUnbounded
+  }
+
   final class NotEmpty[T](val lowerBound: Bound[T], val upperBound: Bound[T])(implicit ordering: Ordering[T]) extends Range[T] {
     import ordering.mkOrderingOps
 
     override def isEmpty: Boolean = false
 
     override def isSingleton: Boolean = lowerBound.isInclusive && lowerBound == upperBound
+
+    override def isUnbounded: Boolean = lowerBound.isInfinite && upperBound.isInfinite
 
     override def contains(value: T): Boolean = fitsLeft(value) && fitsRight(value)
 
