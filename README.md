@@ -5,6 +5,8 @@ UNDER DEVELOPMENT
 sappho is a fanfiction archive scraper written in Scala with an extensive query DSL and support for both archive-aware
 and archive-agnostic data extraction.
 
+[Documentation](https://softboot.github.io/sappho/sappho/index.html)
+
 ## Supported sites
 
 As of May 9, 2020, sappho supports executing queries and fetching specific stories on Archive of Our Own.
@@ -56,7 +58,7 @@ In order to search for stories from a given archive, you need to specify two ele
 Both of these elements are defined in a manner completely independent from the archive used, so the same
 query could be used for more than one archive.
 
-**Example:**
+Queries are defined using the extensive, powerful DSL provided by sappho. For instance:
 
 ```scala
 import sappho.ao3
@@ -85,7 +87,7 @@ for(story <- stories) {
 }
 ```
 
-For a complete list of available criteria, check out the `Queries` object documentation.
+For a complete list of available criteria, check out the [`Queries` object documentation](https://softboot.github.io/sappho/sappho/queries/Queries$.html).
 
 ### Authors
 * Krzysztof Woźny - [softboot](https://github.com/softboot)
