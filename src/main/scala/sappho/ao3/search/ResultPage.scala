@@ -22,9 +22,10 @@ class ResultPage(val url: URL, browser: Browser) extends Iterable[SearchResult] 
   private val page: Document = browser.get(url, logger)
 
   private def loadResultFromLink(selector: String): Option[ResultPage] = (page >> elements(selector))
+    .iterator
     .map(_ attr "href")
     .map("https://archiveofourown.org" + _)
     .map(new URL(_))
     .map(new ResultPage(_, browser))
-    .headOption
+    .nextOption
 }
