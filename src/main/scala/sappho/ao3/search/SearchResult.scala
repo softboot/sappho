@@ -10,7 +10,7 @@ import net.ruippeixotog.scalascraper.model.Element
 import net.ruippeixotog.scalascraper.scraper.ContentExtractors._
 import net.ruippeixotog.scalascraper.scraper.ContentParsers._
 import sappho.ao3.tags.{Category, Character, Fandom, Freeform, Rating, Relationship, Warning}
-import sappho.ao3.{Author, PageStory, Story}
+import sappho.ao3.{Author, FullWork, PageStory, Story}
 import sappho.tags.{Genre, Tag}
 
 private class SearchResult(private[search] val li: Element, browser: Browser) extends Story {
@@ -66,7 +66,7 @@ private class SearchResult(private[search] val li: Element, browser: Browser) ex
 
   override lazy val chapters: Chapters = new Chapters(this)
 
-  override def fullWork: Story = ???
+  override def fullWork: Story = new FullWork(storyId, browser)
 
   private[search] lazy val page: Story = new PageStory(storyId, browser)
 }

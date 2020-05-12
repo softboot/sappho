@@ -18,5 +18,5 @@ private class PageStory(storyId: Long, browser: Browser) extends BaseStory(story
     }
   }
 
-  override def fullWork: Story = ???
+  override def fullWork: Story = if(isOneShot) this else new FullWork(storyId, browser)
 }
