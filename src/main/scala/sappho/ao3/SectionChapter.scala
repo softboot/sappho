@@ -33,4 +33,6 @@ private class SectionChapter(val story: Story, val chapterIndex: Int, root: Elem
   }
 
   override def hashCode(): Int = 31 * story.hashCode + chapterIndex
+
+  override def toString: String = s"sappho.ao3.Chapter(storyId=${story.storyId}, chapterIndex=$chapterIndex)"
 }

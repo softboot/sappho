@@ -72,4 +72,6 @@ private abstract class BaseStory(val storyId: Long, browser: Browser) extends St
   }
 
   override def hashCode: Int = storyId##
+
+  override def toString: String = s"sappho.ao3.Story($storyId)"
 }

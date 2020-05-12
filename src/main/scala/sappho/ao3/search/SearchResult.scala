@@ -80,6 +80,8 @@ private class SearchResult(private[search] val li: Element, browser: Browser) ex
   }
 
   override def hashCode: Int = storyId##
+
+  override def toString: String = s"sappho.ao3.Story($storyId)"
 }
 
 object SearchResult {

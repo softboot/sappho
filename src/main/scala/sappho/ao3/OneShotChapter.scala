@@ -39,4 +39,6 @@ private class OneShotChapter(val story: Story, browser: Browser, page: Document)
   }
 
   override def hashCode(): Int = 31 * story.hashCode
+
+  override def toString: String = s"sappho.ao3.Chapter(storyId=${story.storyId}, chapterIndex=0)"
 }
