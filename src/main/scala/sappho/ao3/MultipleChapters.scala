@@ -5,12 +5,10 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
 
-private class MultipleChapters(story: Story, browser: Browser, page: Document) extends Chapters {
-  private val progressText = (page >> text("dd.chapters")).split("/")
+private class MultipleChapters(story: Story, browser: Browser, page: Document)
+  extends BaseChapters(page >> text("dd.chapters"))
+{
   private lazy val provider = new DropdownListChapterInfoProvider(story, browser, page)
-
-  override def count: Int = progressText(0).toInt
-  override def plannedCount: Option[Int] = progressText(1).toIntOption
 
   override def apply(chapterIndex: Int): Chapter = {
     if(chapterIndex < 0 || chapterIndex >= count)

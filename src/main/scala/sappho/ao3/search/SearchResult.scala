@@ -13,7 +13,7 @@ import sappho.ao3.tags.{Category, Character, Fandom, Freeform, Rating, Relations
 import sappho.ao3.{Author, PageStory, Story}
 import sappho.tags.{Genre, Tag}
 
-class SearchResult(private[search] val li: Element, browser: Browser) extends Story {
+private class SearchResult(private[search] val li: Element, browser: Browser) extends Story {
   override def storyId = (li attr "id").substring(5).toLong
 
   override def title: String = li >> text("h4.heading a")

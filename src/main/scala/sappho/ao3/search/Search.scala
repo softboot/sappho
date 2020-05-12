@@ -11,7 +11,7 @@ import sappho.util.GetRequestBuilder
 
 import scala.collection.mutable
 
-class Search {
+private class Search {
   import Search._
 
   def primaryTag: String = includedTags

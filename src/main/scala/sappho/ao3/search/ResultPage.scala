@@ -9,7 +9,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model._
 import sappho.util.Log._
 
-class ResultPage(val url: URL, browser: Browser) extends Iterable[SearchResult] with StrictLogging {
+private class ResultPage(val url: URL, browser: Browser) extends Iterable[SearchResult] with StrictLogging {
   def prevPage: Option[ResultPage] = loadResultFromLink("li.previous a")
 
   def nextPage: Option[ResultPage] = loadResultFromLink("li.next a")
