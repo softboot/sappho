@@ -30,22 +30,22 @@ implicit val browser: Browser = new JsoupBrowser()
 val story = ao3.Archive.fetchStoryById(7094683)
 
 //Find title
-System.out.println(story.title)
+println(story.title)
 
 //Check word count
-System.out.println(story.wordCount)
+println(story.wordCount)
 
 //Find out when Chapter 3 was posted:
-System.out.println(story.chapters(3).postedOn)
+println(story.chapters(3).postedOn)
 
 //Read first three paragraphs of the last chapter:
-System.out.println(story.chapters.last.paragraphs.take(3).mkString("\n\n"))
+println(story.chapters.last.paragraphs.take(3).mkString("\n\n"))
 
 //Analyze relationship tags:
 story.relationships.foreach {
-  case Relationship.Platonic(chs) => System.out.println("Friends: " + chs)
-  case Relationship.Romantic(chs) => System.out.println("Romantic partners: " + chs)
-  case Relationship.Other(rn) => System.out.println("Other relationship: " + rn)
+  case Relationship.Platonic(chs) => println("Friends: " + chs)
+  case Relationship.Romantic(chs) => println("Romantic partners: " + chs)
+  case Relationship.Other(rn) => println("Other relationship: " + rn)
 }
 ```
 
@@ -83,7 +83,7 @@ for(story <- stories) {
   val authors = story.authors.map(_.name).mkString(", ")
   val words = story.wordCount
 
-  System.out.println(s"'$title' by $authors ($words)")
+  println(s"'$title' by $authors ($words)")
 }
 ```
 
