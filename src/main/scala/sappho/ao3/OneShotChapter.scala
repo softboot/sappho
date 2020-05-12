@@ -31,4 +31,12 @@ private class OneShotChapter(val story: Story, browser: Browser, page: Document)
   override def chapterId: Long = navigationProvider.pollChapterId(0)
 
   private val navigationProvider = new NavigationChapterInfoProvider(story, browser)
+
+
+  override def equals(other: Any): Boolean = other match {
+    case that: sappho.ao3.Chapter => this.story.storyId == that.story.storyId
+    case _ => false
+  }
+
+  override def hashCode(): Int = 31 * story.hashCode
 }

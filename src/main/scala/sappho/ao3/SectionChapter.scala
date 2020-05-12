@@ -22,4 +22,15 @@ private class SectionChapter(val story: Story, val chapterIndex: Int, root: Elem
     .getOrElse("Chapter " + (chapterIndex + 1))
 
   override def paragraphs: Iterable[String] = (root >> texts("div[role=article] p"))
+
+
+
+  override def equals(other: Any): Boolean = other match {
+    case that: sappho.ao3.Chapter =>
+        this.story.storyId == that.story.storyId &&
+        this.chapterIndex == that.chapterIndex
+    case _ => false
+  }
+
+  override def hashCode(): Int = 31 * story.hashCode + chapterIndex
 }
