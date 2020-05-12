@@ -17,6 +17,8 @@ object Archive extends sappho.Archive {
   }
 
   override def search(query: Query, order: Order[Any])(implicit browser: Browser): IterableOnce[Story] = {
-    QueryExecutor.executeQuery(query, order).filter(query)
+    QueryExecutor.executeQuery(query, order)
+      .filter(query)
+      .distinctBy(_.storyId)
   }
 }
