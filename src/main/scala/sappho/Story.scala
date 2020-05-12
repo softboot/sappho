@@ -114,6 +114,23 @@ trait Story extends Text with Tags {
    */
   def chapters: Chapters
 
+  /** Returns a view of the story with all chapters downloaded.
+   *
+   *  By default, downloading specific chapter pages is deferred until
+   *  it is absolutely required. While this behavior is usually beneficial,
+   *  there are cases when it is preferable to download all chapters
+   *  before analyzing the story.
+   *
+   *  In addition, some fanfiction archives, like Archive of Our Own,
+   *  allow their users to optionally download the full text of a story
+   *  in a single GET request. For such archives, when it is known
+   *  in advance that the full text of a story will be required,
+   *  operating on the full work may reduce the number of inherently
+   *  expensive network operations, resulting in drastically improved
+   *  performance for multi-chapter works.
+   */
+  def fullWork: Story
+
   override def paragraphs: Iterable[String] = chapters.iterator
     .flatMap(ch => ch.paragraphs)
     .to(Iterable)

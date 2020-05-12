@@ -9,6 +9,7 @@ trait Story extends sappho.Story {
 
   override def authors: Seq[Author]
   override def chapters: Chapters
+  override def fullWork: Story
 }
 
 object Story {

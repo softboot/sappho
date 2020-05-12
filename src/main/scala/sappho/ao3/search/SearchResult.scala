@@ -66,6 +66,8 @@ class SearchResult(private[search] val li: Element, browser: Browser) extends St
 
   override lazy val chapters: Chapters = new Chapters(this)
 
+  override def fullWork: Story = ???
+
   private[search] lazy val page: Story = new PageStory(storyId, browser)
 }
 

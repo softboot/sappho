@@ -71,4 +71,6 @@ private class PageStory(val storyId: Long, browser: Browser) extends Story with 
       case _ => new MultipleChapters(this, browser, page)
     }
   }
+
+  override def fullWork: Story = ???
 }
