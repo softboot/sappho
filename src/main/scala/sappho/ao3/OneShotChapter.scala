@@ -30,5 +30,5 @@ private class OneShotChapter(val story: Story, browser: Browser, page: Document)
   override def title: String = navigationProvider.pollTitle(0)
   override def chapterId: Long = navigationProvider.pollChapterId(0)
 
-  private lazy val navigationProvider = new NavigationChapterInfoProvider(story, browser)
+  private val navigationProvider = new NavigationChapterInfoProvider(story, browser)
 }

@@ -8,7 +8,7 @@ import net.ruippeixotog.scalascraper.model._
 private class FullWorkChapters(story: FullWork, browser: Browser, page: Document)
   extends BaseChapters(page >> text("dd.chapters"))
 {
-  private lazy val provider = new NavigationChapterInfoProvider(story, browser)
+  private val provider = new NavigationChapterInfoProvider(story, browser)
 
   override def apply(chapterIndex: Int): Chapter = {
     if(chapterIndex < 0 || chapterIndex >= count)

@@ -20,7 +20,7 @@ private trait ChapterInfoProvider {
 
 private class DropdownListChapterInfoProvider(val story: Story, browser: Browser, page: Document) extends ChapterInfoProvider {
   private val list = (page >> element("#selected_id")).children.toIndexedSeq
-  private lazy val navigationProvider = new NavigationChapterInfoProvider(story, browser)
+  private val navigationProvider = new NavigationChapterInfoProvider(story, browser)
 
   override def pollChapterId(chapterIndex: Int): Long = {
     list(chapterIndex)
@@ -40,8 +40,10 @@ private class DropdownListChapterInfoProvider(val story: Story, browser: Browser
 private class NavigationChapterInfoProvider(val story: Story, browser: Browser) extends ChapterInfoProvider with StrictLogging {
   import NavigationChapterInfoProvider._
 
-  private val navigationPage = browser.get(story.url + "/navigate", logger)
-  private val list = (navigationPage >> element("ol.chapter")).children.toIndexedSeq
+  private lazy val list: Seq[Element] = {
+    val navigationPage = browser.get(story.url + "/navigate", logger)
+    (navigationPage >> element("ol.chapter")).children.toIndexedSeq
+  }
 
   override def pollChapterId(chapterIndex: Int): Long = {
     val chapterUrl = (list(chapterIndex) >> element("a")).attr("href")
