@@ -36,7 +36,7 @@ println(story.title)
 println(story.wordCount)
 
 //Find out when Chapter 3 was posted:
-println(story.chapters(3).postedOn)
+println(story.chapters(2).postedOn)
 
 //Read first three paragraphs of the last chapter:
 println(story.chapters.last.paragraphs.take(3).mkString("\n\n"))
