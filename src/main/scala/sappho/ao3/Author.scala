@@ -53,10 +53,8 @@ final class Pseud private(val user: User, val name: String) extends Author {
   override def isPseud: Boolean = true
 
 
-  def canEqual(other: Any): Boolean = other.isInstanceOf[Pseud]
-
   override def equals(other: Any): Boolean = other match {
-    case that: Pseud => (that canEqual this) && (this.user == that.user) && (this.name == that.name)
+    case that: Pseud => this.user == that.user && this.name == that.name
     case _ => false
   }
 
