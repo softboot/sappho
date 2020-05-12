@@ -93,7 +93,7 @@ private class Search {
     val primary = primaryTag
     
     builder.add("work_search[sort_column]", orderToString(ordering))
-      .add("work_search[other_tag_names]", (includedTags - primary).mkString(","))
+      .add("work_search[other_tag_names]", (includedTags.toSet - primary).mkString(","))
       .add("work_search[excluded_tag_names]", excludedTags.mkString(","))
       .add("work_search[crossover]", filterToString(crossoverFilter))
       .add("work_search[complete]", filterToString(completeFilter))

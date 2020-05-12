@@ -18,7 +18,7 @@ private object PageChapter {
 
   def load(story: Story, chapterIndex: Int, browser: Browser, provider: ChapterInfoProvider): PageChapter = {
     val chapterId = provider.pollChapterId(chapterIndex)
-    val page = browser.get(Chapter.urlById(story.storyId, chapterId) + "?view_adult=true", logger)
+    val page = browser.get(Chapter.urlById(story.storyId, chapterId).toString + "?view_adult=true", logger)
     new PageChapter(story, chapterIndex, chapterId, page, provider)
   }
 

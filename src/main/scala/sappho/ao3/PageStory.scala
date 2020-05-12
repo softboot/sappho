@@ -9,7 +9,7 @@ import sappho.ao3.Story._
 import sappho.util.Log._
 
 private class PageStory(storyId: Long, browser: Browser) extends BaseStory(storyId, browser) with StrictLogging {
-  override protected val page: Document = browser.get(urlByStoryId(storyId) + "?view_adult=true", logger)
+  override protected val page: Document = browser.get(urlByStoryId(storyId).toString + "?view_adult=true", logger)
 
   override lazy val chapters: Chapters = {
     (page >> text("dd.chapters")) match {

@@ -15,7 +15,7 @@ case class Relationship(name: String) extends sappho.tags.Relationship {
 
   override def characters: Option[Seq[String]] = {
     if(isPlatonic || isRomantic)
-      Some(sanitizedName.split(separatorPattern))
+      Some(sanitizedName.split(separatorPattern).toIndexedSeq)
     else
       None
   }

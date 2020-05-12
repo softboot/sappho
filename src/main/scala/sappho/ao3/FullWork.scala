@@ -7,7 +7,7 @@ import sappho.ao3.Story._
 import sappho.util.Log._
 
 private class FullWork(storyId: Long, browser: Browser) extends BaseStory(storyId, browser) with StrictLogging {
-  override protected val page: Document = browser.get(urlByStoryId(storyId) + "?view_full_work=true&view_adult=true", logger)
+  override protected val page: Document = browser.get(urlByStoryId(storyId).toString + "?view_full_work=true&view_adult=true", logger)
 
   override val chapters: Chapters = new FullWorkChapters(this, browser, page)
 
