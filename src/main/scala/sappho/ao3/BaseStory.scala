@@ -11,6 +11,8 @@ import net.ruippeixotog.scalascraper.model._
 import sappho.ao3.tags.{Category, Character, Fandom, Freeform, Rating, Relationship, Warning}
 import sappho.tags.{Genre, Tag}
 
+import scala.language.postfixOps
+
 private abstract class BaseStory(val storyId: Long, browser: Browser) extends Story {
   protected def page: Document
 
@@ -61,4 +63,13 @@ private abstract class BaseStory(val storyId: Long, browser: Browser) extends St
 
   override def isComplete: Boolean = chapters.plannedCount.contains(chapters.length)
   override def isOneShot: Boolean = chapters.length == 1 && isComplete
+
+
+
+  override def equals(other: Any): Boolean = other match {
+    case that: sappho.ao3.Story => this.storyId == that.storyId
+    case _ => false
+  }
+
+  override def hashCode: Int = storyId##
 }

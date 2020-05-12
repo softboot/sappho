@@ -13,6 +13,8 @@ import sappho.ao3.tags.{Category, Character, Fandom, Freeform, Rating, Relations
 import sappho.ao3.{Author, FullWork, PageStory, Story}
 import sappho.tags.{Genre, Tag}
 
+import scala.language.postfixOps
+
 private class SearchResult(private[search] val li: Element, browser: Browser) extends Story {
   override def storyId = (li attr "id").substring(5).toLong
 
@@ -69,6 +71,15 @@ private class SearchResult(private[search] val li: Element, browser: Browser) ex
   override def fullWork: Story = new FullWork(storyId, browser)
 
   private[search] lazy val page: Story = new PageStory(storyId, browser)
+
+
+
+  override def equals(other: Any): Boolean = other match {
+    case that: sappho.ao3.Story => this.storyId == that.storyId
+    case _ => false
+  }
+
+  override def hashCode: Int = storyId##
 }
 
 object SearchResult {
