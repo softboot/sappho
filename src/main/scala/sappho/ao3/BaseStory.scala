@@ -22,7 +22,7 @@ private abstract class BaseStory(val storyId: Long, browser: Browser) extends St
     (page >> elementList("h3 a[rel=author]"))
       .iterator
       .map(a => a attr "href")
-      .map(href => Author.fromUrl(href))
+      .map(href => Author.fromUrl(href)(browser))
       .toIndexedSeq
   }
 

@@ -24,7 +24,7 @@ private class SearchResult(private[search] val li: Element, browser: Browser) ex
     (li >> elementList("h4.heading a[rel=author]"))
       .iterator
       .map(a => a attr "href")
-      .map(href => Author.fromUrl(href))
+      .map(href => Author.fromUrl(href)(browser))
       .toIndexedSeq
   }
 

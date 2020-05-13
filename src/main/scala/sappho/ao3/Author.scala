@@ -3,6 +3,14 @@ package sappho.ao3
 import java.net.{URL, URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+
+import com.typesafe.scalalogging.LazyLogging
+import net.ruippeixotog.scalascraper.browser.Browser
+import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
+import net.ruippeixotog.scalascraper.dsl.DSL._
+import net.ruippeixotog.scalascraper.model._
+import sappho.util.Log._
 
 import scala.util.matching.Regex
 
@@ -13,14 +21,14 @@ sealed abstract class Author extends sappho.Author {
 object Author {
   val urlPattern: Regex = "/users/([^/]*)/pseuds/([^/]*)$".r
 
-  def apply(user: String, pseud: String): Author = {
+  def apply(user: String, pseud: String)(implicit browser: Browser): Author = {
     pseud match {
       case `user` => User(user)
       case _ => Pseud(user, pseud)
     }
   }
 
-  def fromUrl(url: String): Author = {
+  def fromUrl(url: String)(implicit browser: Browser): Author = {
     url match {
       case urlPattern(user, pseud) =>
         val decodedUser = URLDecoder.decode(user, StandardCharsets.UTF_8)
@@ -30,10 +38,14 @@ object Author {
   }
 }
 
-final case class User private(name: String) extends Author {
-  override def joinedOn: LocalDate = ???
+final class User private(val name: String, browser: Browser) extends Author with LazyLogging {
+  override def joinedOn: LocalDate = {
+    val dateString = (bioPage >> texts("dl.meta dd")).iterator.drop(1).next
+    LocalDate.parse(dateString, ISO_LOCAL_DATE)
+  }
 
-  override def bio: Option[String] = ???
+  override def bio: Option[String] = (bioPage >?> texts("div.bio blockquote p"))
+    .map(_.mkString("\n\n"))
 
   override def url: URL = {
     val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8)
@@ -43,7 +55,21 @@ final case class User private(name: String) extends Author {
   override def isPseud: Boolean = false
   override def user: User = this
 
+  override def equals(other: Any): Boolean = other match {
+    case that: User => this.name == that.name
+    case _ => false
+  }
+
+  override def hashCode: Int = name.hashCode
+
   override def toString: String = s"sappho.ao3.User(${'"'}${name}${'"'})"
+
+
+  private lazy val bioPage: Document = browser.get(url.toString + "/profile", logger)
+}
+object User {
+  def apply(userName: String)(implicit browser: Browser): User = new User(userName, browser)
+  def unapply(user: User): Option[String] = Some(user.name)
 }
 
 final class Pseud private(val user: User, val name: String) extends Author {
@@ -68,6 +94,6 @@ final class Pseud private(val user: User, val name: String) extends Author {
   override def toString: String = s"sappho.ao3.Pseud(${'"'}${user.name}${'"'}, ${'"'}$name${'"'})"
 }
 object Pseud {
-  def apply(userName: String, pseudName: String): Pseud = new Pseud(User(userName), pseudName)
-  def unapply(pseud: Pseud): (String, String) = (pseud.user.name, pseud.name)
+  def apply(userName: String, pseudName: String)(implicit browser: Browser): Pseud = new Pseud(User(userName), pseudName)
+  def unapply(pseud: Pseud): Option[(String, String)] = Some((pseud.user.name, pseud.name))
 }
