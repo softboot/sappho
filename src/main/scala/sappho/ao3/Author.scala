@@ -2,6 +2,7 @@ package sappho.ao3
 
 import java.net.{URL, URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 
 import scala.util.matching.Regex
 
@@ -30,6 +31,10 @@ object Author {
 }
 
 final case class User private(name: String) extends Author {
+  override def joinedOn: LocalDate = ???
+
+  override def bio: Option[String] = ???
+
   override def url: URL = {
     val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8)
     new URL(s"https://archiveofourown.org/users/$encodedName")
@@ -43,6 +48,8 @@ final case class User private(name: String) extends Author {
 
 final class Pseud private(val user: User, val name: String) extends Author {
   override def fullName: String = s"$name (${user.name})"
+  override def joinedOn: LocalDate = user.joinedOn
+  override def bio: Option[String] = user.bio
 
   override def url: URL = {
     val encodedUser = URLEncoder.encode(user.name, StandardCharsets.UTF_8)
@@ -51,7 +58,6 @@ final class Pseud private(val user: User, val name: String) extends Author {
   }
 
   override def isPseud: Boolean = true
-
 
   override def equals(other: Any): Boolean = other match {
     case that: Pseud => this.user == that.user && this.name == that.name

@@ -1,6 +1,7 @@
 package sappho
 
 import java.net.URL
+import java.time.LocalDate
 
 /** Represents a user of a fanfiction archive.
  *
@@ -29,4 +30,11 @@ trait Author {
    *  author metadata, as well as a list of stories they have contributed to.
    */
   def url: URL
+
+
+  /** Returns the date on which this account was created. */
+  def joinedOn: LocalDate
+
+  /** Returns the user's profile description, if available. */
+  def bio: Option[String]
 }
