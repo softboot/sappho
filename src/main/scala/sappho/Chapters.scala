@@ -20,7 +20,7 @@ package sappho
  */
 trait Chapters extends IndexedSeq[Chapter] {
   /** Returns the number of chapters currently published. */
-  def count: Int
+  def count(): Int
 
   /** Returns the planned number of chapters, if such data is available.
    *
@@ -35,14 +35,14 @@ trait Chapters extends IndexedSeq[Chapter] {
    *  number of chapters to the total number of chapters planned, if it is known.
    *  If the planned number of chapters is unknown, `None` is returned.
    */
-  def progress: Option[Double] = plannedCount.map(d => count.toDouble / d)
+  def progress: Option[Double] = plannedCount.map(d => count().toDouble / d)
 
 
   /** Returns the i-th chapter in order, counting from 0. */
   def apply(i: Int): Chapter
 
   /** Returns a one-use iterator of all currently published chapters.  */
-  override def iterator: Iterator[Chapter] = (0 until count).iterator.map(apply)
+  override def iterator: Iterator[Chapter] = (0 until count()).iterator.map(apply)
 
-  final override def length: Int = count
+  final override def length: Int = count()
 }

@@ -63,8 +63,8 @@ private class SearchResult(private[search] val li: Element, browser: Browser) ex
   override def score: Int = (li >?> extractor("dd.kudos", text, asInt)).getOrElse(0)
   override def views: Int = li >> extractor("dd.hits", text, asInt)
 
-  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.length)
-  override def isOneShot: Boolean = chapters.length == 1 && isComplete
+  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.count)
+  override def isOneShot: Boolean = chapters.count() == 1 && isComplete
 
   override lazy val chapters: Chapters = new Chapters(this)
 

@@ -62,7 +62,7 @@ class SearchResultSpec extends AnyFunSpec with OneInstancePerTest with MockFacto
       assertResult(3131)(story.views)
     }
     it("should have 17 chapters") {
-      assertResult(17)(story.chapters.length)
+      assertResult(17)(story.chapters.count())
     }
     it("should have an unknown planned number of chapters") {
       assertResult(None)(story.chapters.plannedCount)

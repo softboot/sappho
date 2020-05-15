@@ -34,7 +34,7 @@ class ChapterSpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
     val story = new PageStory(7094683, mockBrowser)
 
     it("should have the right number of chapters") {
-      assertResult(31)(story.chapters.length)
+      assertResult(31)(story.chapters.count())
     }
     it("should have the right planned number of chapters") {
       assertResult(Some(31))(story.chapters.plannedCount)
@@ -83,7 +83,7 @@ class ChapterSpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
     val story = new PageStory(7077178, mockBrowser)
 
     it("should have the right number of chapters") {
-      assertResult(11)(story.chapters.length)
+      assertResult(11)(story.chapters.count())
     }
     it("should have an unknown planned number of chapters") {
       assertResult(None)(story.chapters.plannedCount)
@@ -123,7 +123,7 @@ class ChapterSpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
     val story = new PageStory(23191339, mockBrowser)
 
     it("should have one chapter") {
-      assertResult(1)(story.chapters.length)
+      assertResult(1)(story.chapters.count())
     }
     it("should have one planned chapter") {
       assertResult(Some(1))(story.chapters.plannedCount)

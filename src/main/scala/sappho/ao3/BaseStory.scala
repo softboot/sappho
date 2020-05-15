@@ -61,8 +61,8 @@ private abstract class BaseStory(val storyId: Long, browser: Browser) extends St
   override def score: Int = (page >?> extractor("dd.kudos", text, asInt)).getOrElse(0)
   override def views: Int = page >> extractor("dd.hits", text, asInt)
 
-  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.length)
-  override def isOneShot: Boolean = chapters.length == 1 && isComplete
+  override def isComplete: Boolean = chapters.plannedCount.contains(chapters.count())
+  override def isOneShot: Boolean = chapters.count() == 1 && isComplete
 
 
 

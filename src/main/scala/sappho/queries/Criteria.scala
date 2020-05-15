@@ -5,7 +5,7 @@ object Criteria {
   val Score = new Criterion("score")(story => Some(story.score))
   val Views = new Criterion("views")(story => Some(story.views))
 
-  val ChapterCount = new Criterion("chapterCount")(story => Some(story.chapters.length))
+  val ChapterCount = new Criterion("chapterCount")(story => Some(story.chapters.count()))
   val PlannedChapterCount = new Criterion("plannedChapterCount")(story => story.chapters.plannedCount)
 
   val PublishedOn = new Criterion("publishedOn")(story => Some(story.publishedOn))
