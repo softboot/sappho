@@ -7,7 +7,7 @@ import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.model.Document
 
 object Log {
-  implicit class LoggingBrowser(browser: Browser) {
+  implicit class LoggingBrowser(val browser: Browser) extends AnyVal {
     def get(url: URL, logger: Logger): Document = get(url.toString, logger)
 
     def get(url: String, logger: Logger): Document = {

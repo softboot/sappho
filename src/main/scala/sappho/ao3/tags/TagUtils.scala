@@ -1,8 +1,8 @@
 package sappho.ao3.tags
 
 private object TagUtils {
-  implicit class ExtendedString(tag: String) {
-    private val trailingFandomPattern = """^(.*) \(.*\)$""".r
+  implicit class ExtendedString(val tag: String) extends AnyVal {
+    import ExtendedString._
 
     def stripTrailingFandom(): String = {
       tag match {
@@ -10,5 +10,8 @@ private object TagUtils {
         case _ => tag
       }
     }
+  }
+  object ExtendedString {
+    private val trailingFandomPattern = """^(.*) \(.*\)$""".r
   }
 }
