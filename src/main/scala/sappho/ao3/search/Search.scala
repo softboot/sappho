@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import net.ruippeixotog.scalascraper.browser.Browser
+import sappho.ao3.search.SearchUtils._
 import sappho.queries.range._
 import sappho.queries.{BooleanFilter, Order}
 import sappho.util.GetRequestBuilder
@@ -56,12 +57,7 @@ private class Search {
   }
 
   def ordering = ordering0
-  def ordering_=(order: Order[Any]): Unit = {
-    order match {
-      case Order.byDateOfUpdate => ordering0 = order
-      case _ => throw new IllegalArgumentException(s"${order} not supported by AO3")
-    }
-  }
+  def ordering_=(order: Order[Any]): Unit = ordering0 = order.supportedByAO3
 
   var languageId: String = ""
 
@@ -92,7 +88,8 @@ private class Search {
 
     val primary = primaryTag
     
-    builder.add("work_search[sort_column]", orderToString(ordering))
+    builder.add("work_search[sort_column]", ordering.toOrderString)
+      .add("work_search[sort_direction]", ordering.toDirectionString)
       .add("work_search[other_tag_names]", (includedTags.toSet - primary).mkString(","))
       .add("work_search[excluded_tag_names]", excludedTags.mkString(","))
       .add("work_search[crossover]", filterToString(crossoverFilter))
@@ -113,13 +110,6 @@ object Search {
   def baseUrl: URL = new URL("https://archiveofourown.org/works")
   
   private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-
-  private def orderToString(order: Order[Any]): String = order match {
-    case Order.byDateOfUpdate => "revised_at"
-    case _ =>
-      //Unsupported order should have been detected much sooner.
-      throw new IllegalStateException("Invalid order encountered")
-  }
 
   private def filterToString(filter: BooleanFilter): String = filter match {
     case BooleanFilter.Set => "T"
