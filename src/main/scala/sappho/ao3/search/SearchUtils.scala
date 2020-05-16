@@ -1,8 +1,14 @@
 package sappho.ao3.search
 
-import sappho.queries.Order
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+import sappho.queries.range.{Bound, Exclusive, Inclusive, Infinite}
+import sappho.queries.{BooleanFilter, Order}
 
 private object SearchUtils {
+  val queryDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+
   implicit class AO3Order(val order: Order[Any]) extends AnyVal {
     import AO3Order._
 
@@ -22,7 +28,7 @@ private object SearchUtils {
 
     def toDirectionString: String = if(order.isAscending) "asc" else "desc"
   }
-  private object AO3Order {
+  object AO3Order {
     private def matchOrderToString(order: Order[Any]): Option[String] = order match {
       case Order.byTitle => Some("title_to_sort_on")
       case Order.byDateOfPublishing => Some("created_at")
@@ -31,6 +37,47 @@ private object SearchUtils {
       case Order.byViewCount => Some("hits")
       case Order.byScore => Some("kudos_count")
       case _ => None
+    }
+  }
+
+
+  implicit class AO3Filter(val filter: BooleanFilter) extends AnyVal {
+    def toFilterString: String = filter match {
+      case BooleanFilter.Set => "T"
+      case BooleanFilter.Unset => "F"
+      case BooleanFilter.Either => ""
+      case BooleanFilter.Neither =>
+        throw new IllegalArgumentException("Boolean filter 'Neither' should not appear in a clause")
+    }
+  }
+
+
+  implicit class AO3IntBound(val bound: Bound[Int]) extends AnyVal {
+    def toLeftBoundString: String = bound match {
+      case Infinite => ""
+      case Inclusive(e) => e.toString
+      case Exclusive(e) => (e + 1).toString
+    }
+
+    def toRightBoundString: String = bound match {
+      case Infinite => ""
+      case Inclusive(e) => e.toString
+      case Exclusive(e) => (e - 1).toString
+    }
+  }
+
+
+  implicit class AO3DateBound(val bound: Bound[LocalDate]) extends AnyVal {
+    def toLeftBoundString: String = bound match {
+      case Infinite => ""
+      case Inclusive(date) => queryDateFormatter.format(date)
+      case Exclusive(date) => queryDateFormatter.format(date.plusDays(1))
+    }
+
+    def toRightBoundString: String = bound match {
+      case Infinite => ""
+      case Inclusive(date) => queryDateFormatter.format(date)
+      case Exclusive(date) => queryDateFormatter.format(date.minusDays(1))
     }
   }
 }

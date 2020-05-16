@@ -2,7 +2,6 @@ package sappho.ao3.search
 
 import java.net.URL
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 import net.ruippeixotog.scalascraper.browser.Browser
 import sappho.ao3.search.SearchUtils._
@@ -92,12 +91,12 @@ private class Search {
       .add("work_search[sort_direction]", ordering.toDirectionString)
       .add("work_search[other_tag_names]", (includedTags.toSet - primary).mkString(","))
       .add("work_search[excluded_tag_names]", excludedTags.mkString(","))
-      .add("work_search[crossover]", filterToString(crossoverFilter))
-      .add("work_search[complete]", filterToString(completeFilter))
-      .add("work_search[words_from]", leftIntBoundToString(wordCountRange0.lowerBound))
-      .add("work_search[words_to]", rightIntBoundToString(wordCountRange0.upperBound))
-      .add("work_search[date_from]", leftDateBoundToString(revisionDateRange0.lowerBound))
-      .add("work_search[date_to]", rightDateBoundToString(revisionDateRange0.upperBound))
+      .add("work_search[crossover]", crossoverFilter.toFilterString)
+      .add("work_search[complete]", completeFilter.toFilterString)
+      .add("work_search[words_from]", wordCountRange0.lowerBound.toLeftBoundString)
+      .add("work_search[words_to]", wordCountRange0.upperBound.toRightBoundString)
+      .add("work_search[date_from]", revisionDateRange0.lowerBound.toLeftBoundString)
+      .add("work_search[date_to]", revisionDateRange0.upperBound.toRightBoundString)
       .addEmpty("work_search[query]")
       .add("work_search[language_id]", languageId)
       .add("tag_id", primary, x => x) //TODO properly encode the primary tag
@@ -108,39 +107,4 @@ private class Search {
 
 object Search {
   def baseUrl: URL = new URL("https://archiveofourown.org/works")
-  
-  private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-
-  private def filterToString(filter: BooleanFilter): String = filter match {
-    case BooleanFilter.Set => "T"
-    case BooleanFilter.Unset => "F"
-    case BooleanFilter.Either => ""
-    case BooleanFilter.Neither =>
-      //A Neither flag should have been detected much sooner.
-      throw new IllegalStateException("Invalid boolean flag encountered: Neither")
-  }
-
-  private def leftIntBoundToString(bound: Bound[Int]): String = bound match {
-    case Infinite => ""
-    case Inclusive(e) => e.toString
-    case Exclusive(e) => (e + 1).toString
-  }
-
-  private def leftDateBoundToString(bound: Bound[LocalDate]): String = bound match {
-    case Infinite => ""
-    case Inclusive(date) => dateFormatter.format(date)
-    case Exclusive(date) => dateFormatter.format(date.plusDays(1))
-  }
-
-  private def rightIntBoundToString(bound: Bound[Int]): String = bound match {
-    case Infinite => ""
-    case Inclusive(e) => e.toString
-    case Exclusive(e) => (e - 1).toString
-  }
-
-  private def rightDateBoundToString(bound: Bound[LocalDate]): String = bound match {
-    case Infinite => ""
-    case Inclusive(date) => dateFormatter.format(date)
-    case Exclusive(date) => dateFormatter.format(date.minusDays(1))
-  }
 }
