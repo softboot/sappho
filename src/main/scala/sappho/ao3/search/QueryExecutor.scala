@@ -51,6 +51,6 @@ private[ao3] object QueryExecutor {
         case _ => //Ignore.
       }
     }
-    search.results().iterator
+    search.results()
   }
 }

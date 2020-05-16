@@ -66,15 +66,14 @@ private class Search {
     new ResultPage(url, browser)
   }
 
-  def pages()(implicit browser: Browser): Iterable[ResultPage] = {
+  def pages()(implicit browser: Browser): Iterator[ResultPage] = {
     val firstPage = page(0)
     Iterator.iterate[Option[ResultPage]](Some(firstPage))(p => p.get.nextPage)
       .takeWhile(_.isDefined)
       .map(_.get)
-      .to(Iterable)
   }
 
-  def results()(implicit browser: Browser): Iterable[SearchResult] = pages.flatten
+  def results()(implicit browser: Browser): Iterator[SearchResult] = pages.flatten
 
 
   private def urlForPage(pageIndex: Int = 0): URL = {
