@@ -5,7 +5,7 @@ import java.time.LocalDate
 import sappho.queries.range.{Exclusive, FiniteRangeBuilder, Inclusive, RangeBuilder}
 
 object Queries {
-  abstract class LHS[T] {
+  trait LHS[T] extends Any {
     def leftLimit: T
 
     def <[R](rangeBuilder: RangeBuilder[T, R]): FiniteRangeBuilder[T, R] = {
@@ -18,14 +18,14 @@ object Queries {
 
   //For whatever reason, the < and <= operator overloads are not detected if LHS[Int] is used directly.
   //We need to override them with Int as a concrete, non-parametric type.
-  implicit class IntLHS(val leftLimit: Int) extends LHS[Int] {
+  implicit class IntLHS(val leftLimit: Int) extends AnyVal with LHS[Int] {
     override def <[R](rangeBuilder: RangeBuilder[Int, R]): FiniteRangeBuilder[Int, R] = super.<(rangeBuilder)
     override def <=[R](rangeBuilder: RangeBuilder[Int, R]): FiniteRangeBuilder[Int, R] = super.<=(rangeBuilder)
   }
 
   implicit val localDateOrdering: Ordering[LocalDate] = _ compareTo _
 
-  implicit class LocalDateLHS(val leftLimit: LocalDate) extends LHS[LocalDate] {
+  implicit class LocalDateLHS(val leftLimit: LocalDate) extends AnyVal with LHS[LocalDate] {
     override def <[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<(rangeBuilder)
     override def <=[R](rangeBuilder: RangeBuilder[LocalDate, R]): FiniteRangeBuilder[LocalDate, R] = super.<=(rangeBuilder)
   }
