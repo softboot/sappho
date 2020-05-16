@@ -99,7 +99,7 @@ private class Search {
       .add("work_search[date_to]", revisionDateRange0.upperBound.toRightBoundString)
       .addEmpty("work_search[query]")
       .add("work_search[language_id]", languageId)
-      .add("tag_id", primary, x => x) //TODO properly encode the primary tag
+      .add("tag_id", primary)
 
     new URL(builder.get)
   }
