@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import sappho.queries.range.{Bound, Exclusive, Inclusive, Infinite}
 import sappho.queries.{BooleanFilter, Order}
 
-private object SearchUtils {
+private[ao3] object SearchUtils {
   val queryDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
   implicit class AO3Order(val order: Order[Any]) extends AnyVal {

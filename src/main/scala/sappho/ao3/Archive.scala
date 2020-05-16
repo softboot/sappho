@@ -3,6 +3,7 @@ import java.net.URL
 
 import net.ruippeixotog.scalascraper.browser.Browser
 import sappho.ao3.search.QueryExecutor
+import sappho.ao3.search.SearchUtils._
 import sappho.queries.{Order, Query}
 
 object Archive extends sappho.Archive {
@@ -21,4 +22,6 @@ object Archive extends sappho.Archive {
       .filter(query)
       .distinctBy(_.storyId)
   }
+
+  override def supportsOrder(order: Order[Any]) = order.isSupportedByAO3
 }

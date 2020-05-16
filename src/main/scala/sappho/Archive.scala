@@ -39,4 +39,11 @@ trait Archive {
    *  fulfilling the required conditions, sorted in the defined order.
    */
   def search(query: Query, order: Order[Any])(implicit browser: Browser): IterableOnce[Story]
+
+  /** Checks if the given order is supported by the archive.
+   *
+   *  Because stories are sorted on server side, only orderings supported by the archive's
+   *  search engine can be used.
+   */
+  def supportsOrder(order: Order[Any]): Boolean
 }
