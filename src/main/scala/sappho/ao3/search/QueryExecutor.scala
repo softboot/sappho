@@ -7,7 +7,7 @@ import sappho.ao3.Story
 import sappho.queries._
 import sappho.util.MergingIterator
 
-object QueryExecutor {
+private[ao3] object QueryExecutor {
   def executeQuery(query: Query, order: Order[Any])(implicit browser: Browser): Iterator[Story] = query match {
     case True => throw new IllegalArgumentException("Query too vague - you need to specify at least one tag")
 
