@@ -17,6 +17,12 @@ import scala.util.matching.Regex
 sealed abstract class Author extends sappho.Author {
   def isPseud: Boolean
   def user: User
+
+  /** The place where the author lives, if specified. */
+  def location: Option[String]
+
+  /** The author's birthday, if specified. */
+  def birthday: Option[LocalDate]
 }
 object Author {
   val urlPattern: Regex = "/users/([^/]*)/pseuds/([^/]*)$".r
@@ -47,6 +53,11 @@ final class User private(val name: String, browser: Browser) extends Author with
   override def bio: Option[String] = (bioPage >?> texts("div.bio blockquote p"))
     .map(_.mkString("\n\n"))
 
+  override def location: Option[String] = bioPage >?> text("dt.location + dd")
+
+  override def birthday: Option[LocalDate] = (bioPage >?> text("dd.birthday"))
+    .map(LocalDate.parse(_, ISO_LOCAL_DATE))
+
   override def url: URL = {
     val encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8)
     new URL(s"https://archiveofourown.org/users/$encodedName")
@@ -76,6 +87,8 @@ final class Pseud private(val user: User, val name: String) extends Author {
   override def fullName: String = s"$name (${user.name})"
   override def joinedOn: LocalDate = user.joinedOn
   override def bio: Option[String] = user.bio
+  override def location: Option[String] = user.location
+  override def birthday: Option[LocalDate] = user.birthday
 
   override def url: URL = {
     val encodedUser = URLEncoder.encode(user.name, StandardCharsets.UTF_8)
