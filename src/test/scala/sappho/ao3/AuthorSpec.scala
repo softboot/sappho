@@ -33,6 +33,12 @@ class AuthorSpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
     it("should be the base user, not a pseud") {
       assert(!user.isPseud)
     }
+    it("should have only one pseud") {
+      assertResult(1)(user.pseuds.length)
+    }
+    it("should have the right pseud") {
+      assertResult(Seq("Mighty_smash"))(user.pseuds.map(_.name))
+    }
     it("should have the correct date of account creation") {
       assertResult(LocalDate.of(2016, 2, 15))(user.joinedOn)
     }
@@ -105,6 +111,9 @@ class AuthorSpec extends AnyFunSpec with OneInstancePerTest with MockFactory {
     }
     it("should not be a pseudonym") {
       assert(!user.isPseud)
+    }
+    it("should not have any pseudonyms") {
+      assert(user.pseuds.isEmpty)
     }
     it("should have the correct date of account creation") {
       assertResult(LocalDate.of(2014, 4, 28))(user.joinedOn)

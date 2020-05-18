@@ -44,7 +44,7 @@ object Author {
   }
 }
 
-final class User private(val name: String, browser: Browser) extends Author with LazyLogging {
+final class User private(val name: String)(implicit browser: Browser) extends Author with LazyLogging {
   override def joinedOn: LocalDate = {
     val dateString = (bioPage >> texts("dl.meta dd")).iterator.drop(1).next
     LocalDate.parse(dateString, ISO_LOCAL_DATE)
@@ -66,6 +66,16 @@ final class User private(val name: String, browser: Browser) extends Author with
   override def isPseud: Boolean = false
   override def user: User = this
 
+  /** Returns a list of the user's pseudonyms. */
+  def pseuds: Seq[Pseud] = {
+    (bioPage >> elements("dd.pseuds a"))
+      .iterator
+      .map(a => a attr "href")
+      .map(href => Author.fromUrl(href))
+      .collect { case p: Pseud => p }
+      .toIndexedSeq
+  }
+
   override def equals(other: Any): Boolean = other match {
     case that: User => this.name == that.name
     case _ => false
@@ -79,7 +89,7 @@ final class User private(val name: String, browser: Browser) extends Author with
   private lazy val bioPage: Document = browser.get(url.toString + "/profile", logger)
 }
 object User {
-  def apply(userName: String)(implicit browser: Browser): User = new User(userName, browser)
+  def apply(userName: String)(implicit browser: Browser): User = new User(userName)
   def unapply(user: User): Option[String] = Some(user.name)
 }
 
